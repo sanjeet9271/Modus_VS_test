@@ -1,0 +1,55 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #181818;
+}
+
+.banner{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    padding :20px;
+}
+
+.logo{
+    margin-top: 10%;
+}
+
+.logo img {
+    width: 100px;
+    height: 100px;
+}
+
+h1 {
+    margin: 20px 0;
+    font-size: 24px;
+}
+
+p {
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+.instructions {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.instructions li {
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+@media (max-width: 400px) {
+    h1 {
+        font-size: 20px;
+    }
+
+    p, .instructions li {
+        font-size: 12px;
+    }
+}

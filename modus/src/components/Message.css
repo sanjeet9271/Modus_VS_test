@@ -1,0 +1,94 @@
+.message__container {
+  display: flex;
+  flex-direction: column;
+  background-color: #1e1e1e; /* Dark theme background */
+  border: 1px solid #333; /* Subtle border */
+  padding: 10px;
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #f5f5f5; /* Light text for dark theme */
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.message__container--clicked {
+  border: 1px solid #007acc; /* Copilot's chat border color */
+}
+
+/* Avatar styles */
+.message__avatar {
+  display: flex;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 7px;
+}
+
+.username {
+  margin-left: 8px;
+}
+
+.username--clicked {
+  border: 1.3px solid #007acc; /* Copilot's chat border color */
+}
+
+.message__avatar img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%; 
+  border: 2px solid #555; 
+}
+
+.message__body p {
+  font-size: 12px;
+  margin: 0;
+  color: #dcdcdc; /* Slightly lighter text for readability */
+}
+
+/* Dark-themed code container */
+.code__container {
+  background-color: #2d2d2d; /* Dark background */
+  color: #31312f; /* Light text color */
+  border-radius: 2px; /* Rounded corners */
+  padding: 4px; 
+  position: relative; /* For positioning the clipboard icon */
+  overflow-x: auto; /* Enable horizontal scrolling for long code */
+  font-family: 'Fira Code', monospace; /* Monospace font for code */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Clipboard button (hidden by default) */
+.copy__button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: #f8f8f2;
+  cursor: pointer;
+  font-size: 18px;
+  display: none; 
+  z-index: 10;
+  transition: color 0.2s ease-in-out;
+}
+
+/* Clipboard button hover effect */
+.copy__button:hover {
+  color: #50fa7b; /* Light green color on hover */
+}
+
+/* Show the clipboard button on hover */
+.code__container:hover .copy__button {
+  display: block; /* Show the button when hovering over the code container */
+}
+
+/* Syntax highlighting overrides for dark theme */
+.code__container pre {
+  margin: 0;
+  background: none; /* Remove background from the syntax highlighter */
+  color: inherit; /* Inherit text color */
+  font-size: 14px; /* Adjust font size */
+  line-height: 1.5; /* Improve readability */
+}

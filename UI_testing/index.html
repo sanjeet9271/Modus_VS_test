@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask Copilot</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="container">
+        <main>
+            <div class="logo">
+                <img src="modus_coder_logo.png" alt="Modus Coder Logo">
+            </div>
+            <h1>Modus Coder</h1>
+            <p>A Trimble Assistant powered Gen-AI tool for creating UI code generation</p>
+            <ul class="instructions">
+                <li>📎 or type # to attach context</li>
+                <li>@ to chat with your specified Model</li>
+            </ul>
+        </main>
+        <footer>
+            <div class="input-container">
+                <div>file reference</div>
+                <textarea id="autoExpand" placeholder="@tutor"></textarea>
+                <div class="toolbar">
+                    <div class="input-actions">
+                        <button><img src="at_2.svg" alt="At"></button>
+                        <button><img src="attachment.svg" alt="Attach"></button>
+                    </div>
+                    <div class="dropdown">
+                        <div class="model_selection">
+                            <span>React</span>
+                            <button><img src="./arrow.svg"/></button>
+                        </div>
+                        <button><img src="send.svg" alt="Settings"></button>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="./script.js"></script>
+</body>
+</html>

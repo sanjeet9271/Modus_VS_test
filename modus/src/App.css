@@ -1,0 +1,49 @@
+.main__container{
+    height: 100vh;
+    width: 100%;
+    font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: #181818;
+    color: #ffffff;
+    overflow: hidden;
+}
+
+.message__chatbox {
+    height: auto;
+    background-color: #1e1e1e; /* Match VS Code dark theme */
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #555 #1e1e1e;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Custom scrollbar for WebKit-based browsers (Chrome, Safari, Edge) */
+.message__chatbox::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+}
+
+.message__chatbox::-webkit-scrollbar-thumb {
+    background-color: #555; /* Dark gray thumb */
+    border-radius: 4px; /* Rounded corners for the thumb */
+}
+
+.message__chatbox::-webkit-scrollbar-thumb:hover {
+    background-color: #777; /* Lighter gray on hover */
+}
+
+.message__chatbox::-webkit-scrollbar-track {
+    background-color: #1e1e1e; 
+}
+
+
+.message-display {
+    text-align: center;
+    margin-top: 20px;
+}
+.message-display h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+.message-display p {
+    font-size: 1.2rem;
+    color: #555;
+}
