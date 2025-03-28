@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react';
-import Prism from 'prismjs';
-import 'prismjs/components/prism-typescript';
-import 'prismjs/themes/prism-tomorrow.css';
-import 'prismjs/components/prism-jsx';
-import "./Message.css"
+import React, { useEffect, useRef } from 'react';
+import hljs from 'highlight.js';
+import 'highlight.js/styles/vs2015.css'; // You can choose any style you prefer
+import './Message.css';
 
 interface MessageProps {
   message: string;
@@ -11,12 +9,13 @@ interface MessageProps {
 }
 
 const Message: React.FC<MessageProps> = ({ message, isBot }) => {
-  const isCode = isBot && message.startsWith('```') && message.endsWith('```');
-  const codeContent = isCode ? message.slice(3, -3) : message;
+  const codeRef = useRef<HTMLElement>(null);
+  const isCode = isBot && message.trim().startsWith('```tsx') && message.trim().endsWith('```');
+  const codeContent = isCode ? message.trim().slice(6, -3).trim() : message;
 
   useEffect(() => {
-    if (isCode) {
-      Prism.highlightAll();
+    if (isCode && codeRef.current) {
+      hljs.highlightElement(codeRef.current);
     }
   }, [isCode]);
 
@@ -40,7 +39,7 @@ const Message: React.FC<MessageProps> = ({ message, isBot }) => {
       <div className="message__body">
         {isCode ? (
           <pre>
-            <code className="language-tsx">{codeContent}</code>
+            <code ref={codeRef} className="tsx">{codeContent}</code>
           </pre>
         ) : (
           <p>{message}</p>

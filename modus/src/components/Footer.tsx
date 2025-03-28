@@ -3,7 +3,6 @@ import at2 from "../assets/at_2.svg";
 import attachment from "../assets/attachment.svg";
 import arrow from "../assets/arrow.svg";
 import send from "../assets/send.svg";
-import react from "../assets/react.svg";
 import "./Footer.css";
 import { AgentService } from './AgentService';
 
@@ -17,9 +16,12 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage }) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const agentService = new AgentService();
-  agentService.accessToken = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2lkLnRyaW1ibGUuY29tIiwiZXhwIjoxNzQzMDY4MzQwLCJuYmYiOjE3NDMwNjQ3NDAsImlhdCI6MTc0MzA2NDc0MCwianRpIjoiYjFjOWVhZGQyZjM2NDEzNmEwMjMyZmU3ZGE2OThmMGMiLCJqd3RfdmVyIjoyLCJzdWIiOiJmZTE5MWIxNy0zNWZlLTQwZTItYmYyNy05NTkwYjE0ZjZmZjMiLCJpZGVudGl0eV90eXBlIjoidXNlciIsImFtciI6WyJmZWRlcmF0ZWQiLCJva3RhX3RyaW1ibGUiLCJtZmEiXSwiYXV0aF90aW1lIjoxNzQzMDU2MDEwLCJhenAiOiJkOWQyMWVkMC0xNGU3LTQ4ODctYmE0Yi1kMTJhYzJmMmY0NjYiLCJhY2NvdW50X2lkIjoidHJpbWJsZS1wbGFjZWhvbGRlci1vZi1lbXBsb3llZXMiLCJhdWQiOlsiZDlkMjFlZDAtMTRlNy00ODg3LWJhNGItZDEyYWMyZjJmNDY2Il0sInNjb3BlIjoiVERBQVMiLCJkYXRhX3JlZ2lvbiI6InVzIn0.SurK59XvPGItlHkL0qfoSTMFK9w0ZP574Wn3eGpZGT_NsSkF19kJwG4bVuqRH_BbOT6eiGv-qmUbInXrhCuh2hETvCoqkDAt1XfMF1y7DjjMDBu7g5O_YS84qwcx6G-2QbHjX_HnBo1D-GRnUbtKVynRtBqfrMDnyRMbcUansG5PL49PVgtASUYgqgxRHDjaN04I6qUZuygSotc7x0LiLCpsUUuBq1mDN36uIsdOM-___EHmUeG9oO2V4BeqVz99Apjm6I36IpX-gTj0xkPmxAlI2O-u5F9s6Bv99a8wDA_My-nVsnUtW1u3yMs0aoTqkAJ4egBIaE1LeYc-J7paww';
-  const agentName = 'best-modus-react';
-  const sessionId = 'd309e573-693a-4209-a325-430f9542d789';
+  agentService.accessToken = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2lkLnRyaW1ibGUuY29tIiwiZXhwIjoxNzQzMDcyNDQ2LCJuYmYiOjE3NDMwNjg4NDYsImlhdCI6MTc0MzA2ODg0NiwianRpIjoiNjgxNDJmMWZkNzFjNGI1MzhmZGM3ZGJjMzllOWM4N2IiLCJqd3RfdmVyIjoyLCJzdWIiOiJmZTE5MWIxNy0zNWZlLTQwZTItYmYyNy05NTkwYjE0ZjZmZjMiLCJpZGVudGl0eV90eXBlIjoidXNlciIsImFtciI6WyJmZWRlcmF0ZWQiLCJva3RhX3RyaW1ibGUiLCJtZmEiXSwiYXV0aF90aW1lIjoxNzQzMDU2MDEwLCJhenAiOiJkOWQyMWVkMC0xNGU3LTQ4ODctYmE0Yi1kMTJhYzJmMmY0NjYiLCJhY2NvdW50X2lkIjoidHJpbWJsZS1wbGFjZWhvbGRlci1vZi1lbXBsb3llZXMiLCJhdWQiOlsiZDlkMjFlZDAtMTRlNy00ODg3LWJhNGItZDEyYWMyZjJmNDY2Il0sInNjb3BlIjoiVERBQVMiLCJkYXRhX3JlZ2lvbiI6InVzIn0.R_sc58oCqL1SMfyLm2gsIg3P-frVcVAnFLQTbJhbhPpzcWoEoCOOYzhifKzWQsf3mKDvkE4ub27vtOt-22_uMglTq3VPX97BzuEHfySpoyYScus-B5sT7lnBXMszPmJgw9QWlozdYAWCk_oNnghKfmgf6kiH893SCUjD9StA1V1vfeMAsOYmCQuN9A9S06muziAL7EJMKx75AgX4FP0R3AuoY9Ke7Yftwl47rdYpeygKm-08Duid5O_9ZTkyDR5WeVXScWIgYs5ih6y4cgVJoRh4wTmuT97KhePoR-Em1rLvGqvLNsSbkmb2IcIt4Vh-AhU97r9xjZ1vq74bL_Cxlw';
+  // const agentName = 'best-modus-react';
+  // const sessionId = 'd309e573-693a-4209-a325-430f9542d789';
+
+  const reactUri = document.getElementById('root')?.getAttribute('data-image-uri') || undefined;
+
 
   useLayoutEffect(() => {
     const autoExpand = (field: HTMLTextAreaElement) => {
@@ -69,11 +71,63 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage }) => {
       }
 
       try {
-        const botResponse = await agentService.getGeneralAssistantResponse(
-          agentName,
-          inputValue,
-          sessionId
-        );
+        // const botResponse = await agentService.getGeneralAssistantResponse(
+        //   agentName,
+        //   inputValue,
+        //   sessionId
+        // );
+
+        const botResponse = `\`\`\`tsx
+function foor(bar){
+  return bar;
+}
+import React, { useEffect, useRef } from 'react';
+import { ModusNavbar } from '@trimble-oss/modus-react-components';
+
+const MyComponent: React.FC = () => {
+  const navbarRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (navbarRef.current) {
+      navbarRef.current.apps = [
+        {
+          description: 'Library Management App',
+          logoUrl: 'https://modus.trimble.com/favicon.svg',
+          name: 'Library Management',
+          url: 'https://library-management.com/',
+        },
+      ];
+      navbarRef.current.logoOptions = {
+        primary: {
+          url: 'https://modus.trimble.com/img/trimble-logo.svg',
+          height: 24,
+        },
+        secondary: {
+          url: 'https://modus.trimble.com/favicon.svg',
+          height: 24,
+        },
+      };
+      navbarRef.current.profileMenuOptions = {
+        avatarUrl: 'https://avatar.example.com/broken-image-link.png',
+        email: 'library_user@trimble.com',
+        initials: 'LU',
+        signOutText: 'Sign out',
+        username: 'Library User',
+      };
+    }
+  }, []);
+
+  return (
+    <div style={{ height: '100vh', overflow: 'auto' }}>
+      <ModusNavbar id="navbar1" showAppsMenu showHelp showMainMenu showNotifications variant="blue" ref={navbarRef}>
+        <div slot="main" style={{ height: '300px' }}>Render your own main menu.</div>
+        <div slot="notifications">Render your own notifications.</div>
+      </ModusNavbar>
+    </div>
+  );
+};
+
+export default MyComponent;\`\`\``
 
         if (botResponse) {
           onSendMessage({ text: botResponse, isBot: true });
@@ -100,7 +154,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage }) => {
         <div className={`input-container ${isOverflowing ? 'overflowing' : ''}`}>
           <div className={`file__container ${isOverflowing ? 'shadow' : ''}`}>
             <div className="file__reference">
-              <img src={react} alt="File Reference" />
+              <img src={reactUri} alt="File Reference" />
               <span>Footer.tsx</span>
             </div>
           </div>
