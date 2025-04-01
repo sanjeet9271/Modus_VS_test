@@ -5,6 +5,9 @@ import { resolve } from 'path';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  server: {
+    port: 4200, // Set the development server to run on port 4200
+  },
   build: {
     outDir: "build",
     rollupOptions: {
@@ -16,14 +19,6 @@ export default defineConfig({
         chunkFileNames: `assets/[name].js`,
         assetFileNames: `assets/[name].[ext]`,
       },
-    },
-  },
-  optimizeDeps: {
-    include: ['monaco-editor'],
-  },
-  server: {
-    fs: {
-      allow: ['.'], // Allow serving Monaco assets
     },
   }
 })
