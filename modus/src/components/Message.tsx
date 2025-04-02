@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/vs2015.css'; // You can choose any style you prefer
 import './Message.css';
@@ -6,18 +6,59 @@ import './Message.css';
 interface MessageProps {
   message: string;
   isBot: boolean;
+  agent: string;
 }
 
-const Message: React.FC<MessageProps> = ({ message, isBot }) => {
-  const codeRef = useRef<HTMLElement>(null);
-  const isCode = isBot && message.trim().startsWith('```tsx') && message.trim().endsWith('```');
-  const codeContent = isCode ? message.trim().slice(6, -3).trim() : message;
+const Message: React.FC<MessageProps> = ({ message, isBot, agent }) => {
+  const codeRefs = useRef<(HTMLElement | null)[]>([]);
+  const [buttonText, setButtonText] = useState('Copy');
+
+  const extractCodeBlocks = (input: string, languages: string[]): string[] => {
+    return languages.map((language) => {
+      const startMarker = `\`\`\`${language}`;
+      const endMarker = `\`\`\``;
+      const markerIndex = input.indexOf(startMarker);
+      if (markerIndex === -1) {
+        return '';
+      }
+      const startIndex = markerIndex + startMarker.length;
+      const endIndex = input.indexOf(endMarker, startIndex);
+      if (endIndex < 0) {
+        return '';
+      }
+      return input.substring(startIndex, endIndex).trim();
+    });
+  };
+
+
+  const codeContents = isBot
+    ? extractCodeBlocks(message, agent === 'React' ? ['tsx'] : ['html', 'typescript'])
+    : [];
+
+  const isCode = codeContents.some((content) => content !== '');
 
   useEffect(() => {
-    if (isCode && codeRef.current) {
-      hljs.highlightElement(codeRef.current);
+    if (isCode) {
+      codeRefs.current.forEach((ref) => {
+        if (ref) {
+          hljs.highlightElement(ref);
+        }
+      });
     }
   }, [isCode]);
+
+  const handleCopy = () => {
+    const allCode = codeContents.join('\n\n');
+    navigator.clipboard
+      .writeText(allCode)
+      .then(() => {
+        setButtonText('Copied');
+        setTimeout(() => setButtonText('Copy'), 2000);
+      })
+      .catch((err) => {
+        console.error('Failed to copy: ', err);
+      });
+  };
 
   return (
     <div
@@ -38,9 +79,23 @@ const Message: React.FC<MessageProps> = ({ message, isBot }) => {
       </div>
       <div className="message__body">
         {isCode ? (
-          <pre>
-            <code ref={codeRef} className="tsx">{codeContent}</code>
-          </pre>
+          <div>
+            {codeContents.map((content, index) => (
+              <pre key={index}>
+                <code
+                  ref={(el) => {
+                    codeRefs.current[index] = el;
+                  }}
+                  className={agent === 'React' ? 'tsx' : index === 0 ? 'html' : 'typescript'}
+                >
+                  {content}
+                </code>
+              </pre>
+            ))}
+            <button onClick={handleCopy} className="copy-button">
+              {buttonText}
+            </button>
+          </div>
         ) : (
           <p>{message}</p>
         )}

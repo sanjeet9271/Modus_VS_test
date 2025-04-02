@@ -59,30 +59,28 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Clipboard button (hidden by default) */
-.copy__button {
+.message__container {
+  position: relative; /* Ensure the container is positioned relative for absolute positioning */
+}
+
+.copy-button {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  background: transparent;
+  top: 10px;
+  right: 10px;
+  background-color: #007acc;
+  color: white;
   border: none;
-  color: #f8f8f2;
+  padding: 5px 10px;
   cursor: pointer;
-  font-size: 18px;
-  display: none; 
-  z-index: 10;
-  transition: color 0.2s ease-in-out;
+  border-radius: 3px;
+  font-size: 12px;
+  margin-top: 7px;
 }
 
-/* Clipboard button hover effect */
-.copy__button:hover {
-  color: #50fa7b; /* Light green color on hover */
+.copy-button:hover {
+  background-color: #005a9e;
 }
 
-/* Show the clipboard button on hover */
-.code__container:hover .copy__button {
-  display: block; /* Show the button when hovering over the code container */
-}
 
 /* Syntax highlighting overrides for dark theme */
 .code__container pre {

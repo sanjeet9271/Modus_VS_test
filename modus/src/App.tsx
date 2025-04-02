@@ -7,9 +7,8 @@ import Message from './components/Message';
 interface MessageData {
   text: string;
   isBot: boolean;
+  agent:string;
 }
-
-
 
 const App = () => {
   const [messages, setMessages] = useState<MessageData[]>([]);
@@ -33,7 +32,7 @@ const App = () => {
       ) : (
         <div className="message__chatbox">
           {messages.map((msg, index) => (
-            <Message key={index} message={msg.text} isBot={msg.isBot} />
+            <Message key={index} message={msg.text} isBot={msg.isBot} agent={msg.agent}  />
           ))}
         </div>
       )}

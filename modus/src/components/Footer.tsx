@@ -5,10 +5,11 @@ import arrow from "../assets/arrow.svg";
 import send from "../assets/send.svg";
 import "./Footer.css";
 import { AgentService } from './AgentService';
-import react_1 from "../assets/react_1.svg"
+import react_1 from "../assets/react_1.svg";
+import { v4 as uuidv4 } from 'uuid';
 
 interface FooterProps {
-  onSendMessage: (message: { text: string; isBot: boolean }) => void;
+  onSendMessage: (message: { text: string; isBot: boolean ;agent: string }) => void;
   access_token:string;
 }
 
@@ -16,18 +17,22 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
   const [inputValue, setInputValue] = useState('');
   const [isOverflowing, setIsOverflowing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedModel, setSelectedModel] = useState('React');
 
   const agentService = new AgentService();
   agentService.accessToken = access_token;
-  const agentName = 'best-modus-react';
-  const sessionId = 'd309e573-693a-4209-a325-430f9542d789';
+  const agentName = selectedModel =='React'?'best-modus-react':'angularp2c';
+  const react_sessionId = uuidv4();
+  const angular_sessionId = uuidv4();
+  const sessionId = selectedModel =='React'? react_sessionId : angular_sessionId;
 
   const reactUri = document.getElementById('root')?.getAttribute('data-image-uri') || react_1 || undefined;
 
 
   useLayoutEffect(() => {
     const autoExpand = (field: HTMLTextAreaElement) => {
-      const maxHeight = 200;
+      const maxHeight = 200; 
       field.style.height = 'inherit'; 
       const computed = window.getComputedStyle(field);
       const height =
@@ -51,8 +56,8 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
       }
 
       if (container && chatbox) {
-        const footerHeight = container.offsetHeight + 20; 
-        chatbox.style.height = `calc(100vh - ${footerHeight}px)`;  
+        const footerHeight = container.offsetHeight + 20; // Include the extra 20px
+        chatbox.style.height = `calc(100vh - ${footerHeight}px)`; 
         chatbox.style.overflowY = 'auto';
       }
     };
@@ -64,7 +69,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
 
   const handleSendClick = async () => {
     if (inputValue.trim()) {
-      onSendMessage({ text: inputValue, isBot: false });
+      onSendMessage({ text: inputValue, isBot: false ,agent: selectedModel });
       setInputValue('');
 
       if (textareaRef.current) {
@@ -79,60 +84,8 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
           sessionId
         );
 
-//         const botResponse = `\`\`\`tsx
-// function foor(bar){
-//   return bar;
-// }
-// import React, { useEffect, useRef } from 'react';
-// import { ModusNavbar } from '@trimble-oss/modus-react-components';
-
-// const MyComponent: React.FC = () => {
-//   const navbarRef = useRef<any>(null);
-
-//   useEffect(() => {
-//     if (navbarRef.current) {
-//       navbarRef.current.apps = [
-//         {
-//           description: 'Library Management App',
-//           logoUrl: 'https://modus.trimble.com/favicon.svg',
-//           name: 'Library Management',
-//           url: 'https://library-management.com/',
-//         },
-//       ];
-//       navbarRef.current.logoOptions = {
-//         primary: {
-//           url: 'https://modus.trimble.com/img/trimble-logo.svg',
-//           height: 24,
-//         },
-//         secondary: {
-//           url: 'https://modus.trimble.com/favicon.svg',
-//           height: 24,
-//         },
-//       };
-//       navbarRef.current.profileMenuOptions = {
-//         avatarUrl: 'https://avatar.example.com/broken-image-link.png',
-//         email: 'library_user@trimble.com',
-//         initials: 'LU',
-//         signOutText: 'Sign out',
-//         username: 'Library User',
-//       };
-//     }
-//   }, []);
-
-//   return (
-//     <div style={{ height: '100vh', overflow: 'auto' }}>
-//       <ModusNavbar id="navbar1" showAppsMenu showHelp showMainMenu showNotifications variant="blue" ref={navbarRef}>
-//         <div slot="main" style={{ height: '300px' }}>Render your own main menu.</div>
-//         <div slot="notifications">Render your own notifications.</div>
-//       </ModusNavbar>
-//     </div>
-//   );
-// };
-
-// export default MyComponent;\`\`\``
-
         if (botResponse) {
-          onSendMessage({ text: botResponse, isBot: true });
+          onSendMessage({ text: botResponse, isBot: true ,agent: selectedModel });
         } else {
           console.error('Bot response is undefined');
         }
@@ -146,27 +99,19 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
     console.log("At button clicked");
   };
 
-  const handleAttachmentClick = async () => {
+  const handleAttachmentClick = () => {
     console.log("Attachment button clicked");
-  
-    // // Open file picker dialog
-    // const files = await vscode.window.showOpenDialog({
-    //   canSelectFiles: true, // Allow only files
-    //   canSelectFolders: false, // Disallow folder selection
-    //   canSelectMany: false, // Allow only one file at a time
-    //   filters: {
-    //     'All Files': ['*'], // Allow all file types
-    //   },
-    // });
-  
-    // if (files && files.length > 0) {
-    //   const selectedFile = files[0];
-    //   console.log(`Selected file: ${selectedFile.fsPath}`);
-    //   // Perform any action with the selected file
-    // } else {
-    //   console.log("No file selected");
-    // }
   };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const selectModel = (model: string) => {
+    setSelectedModel(model);
+    setIsDropdownOpen(false);
+  };
+
 
   return (
     <div className="footer__wrapper">
@@ -195,11 +140,17 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
               </button>
             </div>
             <div className="dropdown">
-              <div className="model_selection">
+            <div className="model_selection" onClick={toggleDropdown}>
                 <button>
-                  <span>React</span>
+                  <span>{selectedModel}</span>
                   <img src={arrow} alt="Arrow" />
                 </button>
+                {isDropdownOpen && (
+                  <div className="dropdown-menu">
+                    <div onClick={() => selectModel('React')}>React</div>
+                    <div onClick={() => selectModel('Angular')}>Angular</div>
+                  </div>
+                )}
               </div>
               <button onClick={handleSendClick}>
                 <img src={send} alt="Send" />
