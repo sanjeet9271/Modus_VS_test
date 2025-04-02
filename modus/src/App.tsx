@@ -3,6 +3,7 @@ import  { useEffect, useState } from 'react';
 import Banner from './components/Banner';
 import Footer from './components/Footer';
 import Message from './components/Message';
+import "./App.css"
 
 interface MessageData {
   text: string;

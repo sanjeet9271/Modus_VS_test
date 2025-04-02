@@ -22,6 +22,14 @@ export class SidePanelProvider implements WebviewViewProvider {
     };
 
     this.updateWebviewContent();
+
+    webviewView.webview.onDidReceiveMessage((message) => {
+      switch (message.command) {
+        case 'authenticate':
+          vscode.commands.executeCommand('moduscoder.authenticate');
+          break;
+      }
+    });
   }
 
   public updateWebviewContent() {
@@ -53,15 +61,56 @@ export class SidePanelProvider implements WebviewViewProvider {
           ">
           <link rel="stylesheet" type="text/css" href="${stylesUri}" nonce="${nonce}">
           <title>Modus Coder</title>
+          <style nonce="${nonce}">
+            .login-button {
+              padding: 12px 24px;
+              font-size: 16px;
+              color: #ffffff;
+              background-color: #007acc;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              transition: background-color 0.3s ease;
+              margin-top: 20px;
+            }
+            .login-button:hover {
+              background-color: #005f99;
+            }
+            .center {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 100vh;
+            }
+          </style>
         </head>
         <body> 
-          <div id="root" accessToken="${accessToken || ''}"  data-image-uri="${reactUri}">
+          <div id="${!accessToken || accessToken === 'NULL' ? 'root_' : 'root'}" accessToken="${accessToken || ''}" data-image-uri="${reactUri}">
+            ${!accessToken || accessToken === 'NULL' ? `
+              <div class="center">
+                <button id="authenticateButton" class="login-button">Login</button>
+              </div>
+            ` : ''}
           </div>
+          <script nonce="${nonce}">
+            const vscode = acquireVsCodeApi();
+            document.getElementById('authenticateButton')?.addEventListener('click', () => {
+              console.log('Authenticate button clicked');
+              vscode.postMessage({ command: 'authenticate' });
+            });
+
+            // Change the id to 'root' if accessToken is not NULL
+            if (document.getElementById('root_') && document.getElementById('root_').getAttribute('accessToken') !== 'NULL') {
+              document.getElementById('root_').id = 'root';
+            }
+          </script>
           <script type="module" src="${scriptUri}" nonce="${nonce}"></script>
         </body>
       </html>
     `;
-  }
+}
+
+
 
   public dispose() {
     this._view = undefined;

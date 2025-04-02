@@ -47,8 +47,6 @@ async function authenticate(context: vscode.ExtensionContext) {
   }
 }
 
-
-
 export async function deactivate() {
   console.log("Deactivation process completed.");
 }
