@@ -23,13 +23,13 @@ export class SidePanelProvider implements WebviewViewProvider {
 
     this.updateWebviewContent();
 
-    webviewView.webview.onDidReceiveMessage((message) => {
-      switch (message.command) {
-        case 'authenticate':
-          vscode.commands.executeCommand('moduscoder.authenticate');
-          break;
-      }
-    });
+    webviewView.webview.onDidReceiveMessage(this.handleMessage.bind(this));
+  }
+
+  private handleMessage(message: { command: string }) {
+    if (message.command === 'authenticate') {
+      vscode.commands.executeCommand('moduscoder.authenticate');
+    }
   }
 
   public updateWebviewContent() {
@@ -44,6 +44,10 @@ export class SidePanelProvider implements WebviewViewProvider {
     const stylesUri = getUri(webview, extensionUri, ["modus", "build", "assets", "index.css"]);
     const scriptUri = getUri(webview, extensionUri, ["modus", "build", "assets", "index.js"]);
     const reactUri = getUri(webview, extensionUri, ["modus", "build", "react_1.svg"]);
+    const moduscoderUri = getUri(webview, extensionUri, ["modus", "build", "modus_coder_logo.png"]);
+
+    const isAuthenticated = accessToken && accessToken !== 'NULL';
+    const rootId = isAuthenticated ? 'root' : 'root_';
 
     return /*html*/ `
       <!DOCTYPE html>
@@ -55,9 +59,9 @@ export class SidePanelProvider implements WebviewViewProvider {
             default-src 'none'; 
             style-src ${webview.cspSource} 'nonce-${nonce}'; 
             script-src ${webview.cspSource} 'nonce-${nonce}'; 
-            img-src ${webview.cspSource} https://modus-coder.trimble.cloud https://avatars.githubusercontent.com data:; 
+            img-src ${webview.cspSource} self https://modus-coder.trimble.cloud https://avatars.githubusercontent.com https://us.id.trimble.com data:; 
             font-src ${webview.cspSource} https://*.vscode-cdn.net; 
-            connect-src ${webview.cspSource} https://agw.construction-integration.trimble.cloud;
+            connect-src ${webview.cspSource} https://agw.construction-integration.trimble.cloud https://id.trimble.com;
           ">
           <link rel="stylesheet" type="text/css" href="${stylesUri}" nonce="${nonce}">
           <title>Modus Coder</title>
@@ -85,12 +89,11 @@ export class SidePanelProvider implements WebviewViewProvider {
           </style>
         </head>
         <body> 
-          <div id="${!accessToken || accessToken === 'NULL' ? 'root_' : 'root'}" accessToken="${accessToken || ''}" data-image-uri="${reactUri}">
-            ${!accessToken || accessToken === 'NULL' ? `
+          <div id="${rootId}" accessToken="${accessToken || ''}" data-image-uri="${reactUri}" moduslogo="${moduscoderUri}">
+            ${!isAuthenticated ? `
               <div class="center">
                 <button id="authenticateButton" class="login-button">Login</button>
-              </div>
-            ` : ''}
+              </div>` : ''}
           </div>
           <script nonce="${nonce}">
             const vscode = acquireVsCodeApi();
@@ -99,7 +102,6 @@ export class SidePanelProvider implements WebviewViewProvider {
               vscode.postMessage({ command: 'authenticate' });
             });
 
-            // Change the id to 'root' if accessToken is not NULL
             if (document.getElementById('root_') && document.getElementById('root_').getAttribute('accessToken') !== 'NULL') {
               document.getElementById('root_').id = 'root';
             }
@@ -108,18 +110,11 @@ export class SidePanelProvider implements WebviewViewProvider {
         </body>
       </html>
     `;
-}
-
-
+  }
 
   public dispose() {
     this._view = undefined;
-
-    while (this._disposables.length) {
-      const disposable = this._disposables.pop();
-      if (disposable) {
-        disposable.dispose();
-      }
-    }
+    this._disposables.forEach(disposable => disposable.dispose());
+    this._disposables = [];
   }
 }

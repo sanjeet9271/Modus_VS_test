@@ -3,15 +3,23 @@ import hljs from 'highlight.js';
 import 'highlight.js/styles/vs2015.css'; // You can choose any style you prefer
 import './Message.css';
 
+interface UserInfo {
+  email: string;
+  picture: string;
+}
+
 interface MessageProps {
   message: string;
   isBot: boolean;
   agent: string;
+  userinfo: UserInfo | null;
 }
 
-const Message: React.FC<MessageProps> = ({ message, isBot, agent }) => {
+const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) => {
   const codeRefs = useRef<(HTMLElement | null)[]>([]);
   const [buttonText, setButtonText] = useState('Copy');
+
+  const moduslogourl = document.getElementById('root')?.getAttribute('moduslogo');
 
   const extractCodeBlocks = (input: string, languages: string[]): string[] => {
     return languages.map((language) => {
@@ -29,7 +37,6 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent }) => {
       return input.substring(startIndex, endIndex).trim();
     });
   };
-
 
   const codeContents = isBot
     ? extractCodeBlocks(message, agent === 'React' ? ['tsx'] : ['html', 'typescript'])
@@ -70,12 +77,14 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent }) => {
         <img
           src={
             isBot
-              ? 'https://avatars.githubusercontent.com/u/194470184?v=4&size=64'
-              : 'https://avatars.githubusercontent.com/u/194460184?v=4&size=64'
+              ? moduslogourl || 'https://avatars.githubusercontent.com/u/194470184?v=4&size=64'
+              : userinfo?.picture || 'https://avatars.githubusercontent.com/u/194460184?v=4&size=64'
           }
           alt={isBot ? 'Bot Avatar' : 'User Avatar'}
         />
-        <div className="username">Sanjeet9271</div>
+        <div className="username">
+          {isBot ? 'Modus Coder' : userinfo ? userinfo.email : 'Unknown User'}
+        </div>
       </div>
       <div className="message__body">
         {isCode ? (

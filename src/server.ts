@@ -29,9 +29,50 @@ export function startServer(context: vscode.ExtensionContext, sidePanelProvider:
           context.globalState.update('accessToken', accessToken);
           sidePanelProvider.updateWebviewContent();
           
-          res.writeHead(200, { 'Content-Type': 'text/plain' });
-          res.end(`Authentication successful! Access Token: ${accessToken}`);
-          console.log('Access Token:', accessToken);
+          res.writeHead(200, { 'Content-Type': 'text/html' });
+          res.end(`
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Authentication Successful</title>
+              <style>
+                body {
+                  font-family: Arial, sans-serif;
+                  background-color: #f4f4f9;
+                  color: #333;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  height: 100vh;
+                  margin: 0;
+                }
+                .container {
+                  text-align: center;
+                  padding: 20px;
+                  border: 1px solid #ddd;
+                  border-radius: 8px;
+                  background-color: #fff;
+                  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                }
+                h1 {
+                  color: #007acc;
+                }
+                p {
+                  font-size: 16px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <h1>Authentication Successful!</h1>
+                <p>You can close this window.</p>
+              </div>
+            </body>
+            </html>
+          `);
+          console.log('Access Token obtained and stored.');
         } catch (error) {
           res.writeHead(500, { 'Content-Type': 'text/plain' });
           res.end('Failed to obtain access token');
