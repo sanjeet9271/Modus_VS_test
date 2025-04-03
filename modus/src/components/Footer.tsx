@@ -22,13 +22,15 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
   const [selectedModel, setSelectedModel] = useState('React');
 
   const agentService = new AgentService();
-  agentService.accessToken = access_token || "eyJhbGciOiJSUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2lkLnRyaW1ibGUuY29tIiwiZXhwIjoxNzQzNjc1Njg4LCJuYmYiOjE3NDM2NzIwODgsImlhdCI6MTc0MzY3MjA4OCwianRpIjoiMWZiY2Q2ZmU4NjE4NGEzMGJmYjM4MGNkOGExODA5MGYiLCJqd3RfdmVyIjoyLCJzdWIiOiJmZTE5MWIxNy0zNWZlLTQwZTItYmYyNy05NTkwYjE0ZjZmZjMiLCJpZGVudGl0eV90eXBlIjoidXNlciIsImFtciI6WyJmZWRlcmF0ZWQiLCJva3RhX3RyaW1ibGUiLCJtZmEiXSwiYXV0aF90aW1lIjoxNzQzNjY1MTE0LCJhenAiOiJkOWQyMWVkMC0xNGU3LTQ4ODctYmE0Yi1kMTJhYzJmMmY0NjYiLCJhY2NvdW50X2lkIjoidHJpbWJsZS1wbGFjZWhvbGRlci1vZi1lbXBsb3llZXMiLCJhdWQiOlsiZDlkMjFlZDAtMTRlNy00ODg3LWJhNGItZDEyYWMyZjJmNDY2Il0sInNjb3BlIjoiVERBQVMiLCJkYXRhX3JlZ2lvbiI6InVzIn0.LVbUYAuIKVE5sEyc1JC-TphNURRvcETO5cxSSUPVKHNBvI8cYOTS91k-NyoT_EkCh9jYRok9xvxvfmY6XIsNbdBl1J87kQlZNiGROW00QKGJIO1eZ0f5LGVUH2yVJ16stP14dUdp-4TsRrT4isL7pnYEvVQwQ2pQN2jnmk8v9x_Jlycfjf7IZHIUJIOKtoNhUf9weWpOm22BpXAqqVQclRHWCf74t-LJe6wehnf7QWXELINUbVCu2Yq8pApdIxjHmI-kUsBoMfEOAEIVkDAB4HerKh4bBYiYoZ3JBG7OlHRjzzA6aheSCaNzN1EaFPqX0-SfcvsGSBsPivFXzxJGjg";
+  agentService.accessToken = access_token || "eyJhbGciOiJSUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2lkLnRyaW1ibGUuY29tIiwiZXhwIjoxNzQzNjc5NzMwLCJuYmYiOjE3NDM2NzYxMzAsImlhdCI6MTc0MzY3NjEzMCwianRpIjoiNzliZDVjYzhlMDdjNDViNmJjMjU4NDIxMjU0NzNlMmUiLCJqd3RfdmVyIjoyLCJzdWIiOiJmZTE5MWIxNy0zNWZlLTQwZTItYmYyNy05NTkwYjE0ZjZmZjMiLCJpZGVudGl0eV90eXBlIjoidXNlciIsImFtciI6WyJmZWRlcmF0ZWQiLCJva3RhX3RyaW1ibGUiLCJtZmEiXSwiYXV0aF90aW1lIjoxNzQzNjY1MTE0LCJhenAiOiJkOWQyMWVkMC0xNGU3LTQ4ODctYmE0Yi1kMTJhYzJmMmY0NjYiLCJhY2NvdW50X2lkIjoidHJpbWJsZS1wbGFjZWhvbGRlci1vZi1lbXBsb3llZXMiLCJhdWQiOlsiZDlkMjFlZDAtMTRlNy00ODg3LWJhNGItZDEyYWMyZjJmNDY2Il0sInNjb3BlIjoiVERBQVMiLCJkYXRhX3JlZ2lvbiI6InVzIn0.eo5yeR-fFvkXoXOOFJ6dN8PJYoLPLDLszsIZ6GNSJdjP7updmBcgYBYoC0xM_y_MWspx8OWAMdPtHqFBs4caWuhH9MOUL7xsV59XnkMgMDzY0JaW48ASWhZZfVYBgjSehbIvMG5FEK3OXGEUsX71K5tYAeEqqpZLGubmvZ-dsQ7Ra5UePZ78E2qXmbHA3FSBzxn7j0pHwladCINauRUM1To1wlPzqqRGPXvOg8ZHOMG6A9n2MzXDflBv7VDkl_v9ONlJ7KUdnTwr6ag63VpaVuFiNtB1KYvAHwx-JwTBtG3jpL7fnjFCeEojy_A-1P5LHaF69mCR0Wftny2PYHap2A";
   const agentName = selectedModel =='React'?'best-modus-react':'angularp2c';
   const react_sessionId = uuidv4();
   const angular_sessionId = uuidv4();
   const sessionId = selectedModel =='React'? react_sessionId : angular_sessionId;
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [fileInputValue, setFileInputValue] = useState<File | null>(null);
+  const [isFocused, setIsFocused] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const reactUri = document.getElementById('root')?.getAttribute('data-image-uri') || react_1 || undefined;
   const angularUri = document.getElementById('root')?.getAttribute('angularLogo') || angularLogo ||undefined;
@@ -71,33 +73,44 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
     }
   }, [inputValue,fileInputValue]); 
 
+  const updateProgress = (value: number) => {
+    setProgress(value);
+  };
+
   const handleSendClick = async () => {
     if (inputValue.trim()) {
-      onSendMessage({ text: inputValue, isBot: false ,agent: selectedModel });
+      onSendMessage({ text: inputValue, isBot: false, agent: selectedModel });
       setInputValue('');
-
+      updateProgress(10); // Start progress at 10%
+  
       if (textareaRef.current) {
         textareaRef.current.style.height = 'inherit';
         setIsOverflowing(false);
       }
-
+  
       try {
+        updateProgress(30); // Update progress to 30% while waiting for response
         const botResponse = await agentService.getGeneralAssistantResponse(
           agentName,
           inputValue,
           sessionId
         );
-
+  
         if (botResponse) {
-          onSendMessage({ text: botResponse, isBot: true ,agent: selectedModel });
+          updateProgress(80);
+          onSendMessage({ text: botResponse, isBot: true, agent: selectedModel });
+          updateProgress(100); // Complete progress at 100%
         } else {
           console.error('Bot response is undefined');
+          updateProgress(0); // Reset progress if response is undefined
         }
       } catch (error) {
         console.error('Error fetching bot response:', error);
+        updateProgress(0); // Reset progress on error
       }
     }
   };
+  
 
   const handleAtClick = () => {
     console.log("At button clicked");
@@ -114,46 +127,51 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
     const file = event.target.files?.[0];
     if (file) {
       setFileInputValue(file);
-      onSendMessage({ text: "Image Succesfully Uploaded", isBot: false, agent: selectedModel });
+      onSendMessage({ text: "Image Succesfully Uploaded !", isBot: false, agent: selectedModel });
+      updateProgress(30);
       const reader = new FileReader();
       reader.onload= async () => {
         const base64String = reader.result?.toString() // Get the base64 part
         if (base64String) {
           try {
-            const modusCode = await agentService.processImageToModus(base64String, selectedModel);
-//             const modusCode = `\`\`\`tsx
-// import React from 'react';
-// import { ModusButton } from '@trimble-oss/modus-react-components';
+            // const modusCode = await agentService.processImageToModus(base64String, selectedModel);
+            updateProgress(80);
+            const modusCode = `\`\`\`tsx
+import React from 'react';
+import { ModusButton } from '@trimble-oss/modus-react-components';
 
-// const MyComponent: React.FC = () => {
-//   return (
-//     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px', overflow: 'auto' }}>
-//       <ModusButton color="primary">Button 1</ModusButton>
-//       <ModusButton color="secondary">Button 2</ModusButton>
-//     </div>
-//   );
-// };
+const MyComponent: React.FC = () => {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px', overflow: 'auto' }}>
+      <ModusButton color="primary">Button 1</ModusButton>
+      <ModusButton color="secondary">Button 2</ModusButton>
+    </div>
+  );
+};
 
-// export default MyComponent;
-// import React from 'react';
-// import { ModusButton } from '@trimble-oss/modus-react-components';
+export default MyComponent;
+import React from 'react';
+import { ModusButton } from '@trimble-oss/modus-react-components';
 
-// const MyComponent: React.FC = () => {
-//   return (
-//     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px', overflow: 'auto' }}>
-//       <ModusButton color="primary">Button 1</ModusButton>
-//       <ModusButton color="secondary">Button 2</ModusButton>
-//     </div>
-//   );
-// };
+const MyComponent: React.FC = () => {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px', overflow: 'auto' }}>
+      <ModusButton color="primary">Button 1</ModusButton>
+      <ModusButton color="secondary">Button 2</ModusButton>
+    </div>
+  );
+};
 
-// export default MyComponent;\`\`\``
+export default MyComponent;\`\`\``
             if (modusCode) {
+              updateProgress(100);
               onSendMessage({ text: modusCode, isBot: true, agent: selectedModel });
             } else {
+              updateProgress(0);
               console.error("Failed to process image to MODUS code.");
             }
           } catch (error) {
+            updateProgress(0);
             console.error("Error processing image:", error);
           }
         }
@@ -174,7 +192,8 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
 
   return (
     <div className="footer__wrapper">
-      <div className="footer__container">
+      <div className="progress-bar" style={{ width: `${progress}%` }}></div>
+       <div className={`footer__container ${isFocused ? 'focused' : ''}`}>
         <div className={`input-container ${isOverflowing ? 'overflowing' : ''}`}>
           <div className={`file__container ${isOverflowing ? 'shadow' : ''}`}>
           {selectedModel === 'React' ? (
@@ -195,6 +214,11 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
             placeholder="Enter your Query"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
+            onFocus={() => {
+              setIsFocused(true);
+              updateProgress(0); 
+            }}
+            onBlur={() => setIsFocused(false)}
           ></textarea>
           <div className="toolbar">
             <div className="input-actions">

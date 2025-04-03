@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import hljs from 'highlight.js';
-import 'highlight.js/styles/vs2015.css'; // You can choose any style you prefer
+import 'highlight.js/styles/vs2015.css'; 
 import './Message.css';
 
 interface UserInfo {
@@ -18,6 +18,8 @@ interface MessageProps {
 const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) => {
   const codeRefs = useRef<(HTMLElement | null)[]>([]);
   const [buttonText, setButtonText] = useState('Copy');
+  const [isFocused, setIsFocused] = useState(false); // New state for focus
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const moduslogourl = document.getElementById('root')?.getAttribute('moduslogo');
 
@@ -54,6 +56,19 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
     }
   }, [isCode]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsFocused(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const handleCopy = () => {
     const allCode = codeContents.join('\n\n');
     navigator.clipboard
@@ -69,9 +84,11 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
 
   return (
     <div
+      ref={containerRef}
       className={`message__container ${
         isBot ? 'message__container--bot' : 'message__container--user'
-      }`}
+      } ${isFocused ? 'focused' : ''}`} // Add focused class conditionally
+      onClick={() => setIsFocused(true)} // Set focus state on click
     >
       <div className="message__avatar">
         <img

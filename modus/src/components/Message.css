@@ -13,8 +13,8 @@
   word-wrap: break-word;
 }
 
-.message__container--clicked {
-  border: 1px solid #007acc; /* Copilot's chat border color */
+.message__container.focused {
+  border: 1px solid #0f8cdf; /* VS Code blue */
 }
 
 /* Avatar styles */
