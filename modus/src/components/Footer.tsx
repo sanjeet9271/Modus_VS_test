@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState, useRef } from 'react';
+import React, { useLayoutEffect, useState, useRef} from 'react';
 import at2 from "../assets/at_2.svg";
 import attachment from "../assets/attachment.svg";
 import arrow from "../assets/arrow.svg";
@@ -6,6 +6,7 @@ import send from "../assets/send.svg";
 import "./Footer.css";
 import { AgentService } from './AgentService';
 import react_1 from "../assets/react_1.svg";
+import angularLogo from "../assets/Angular_Logo.png";
 import { v4 as uuidv4 } from 'uuid';
 
 interface FooterProps {
@@ -21,13 +22,16 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
   const [selectedModel, setSelectedModel] = useState('React');
 
   const agentService = new AgentService();
-  agentService.accessToken = access_token || "eyJhbGciOiJSUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2lkLnRyaW1ibGUuY29tIiwiZXhwIjoxNzQzNTkxODMyLCJuYmYiOjE3NDM1ODgyMzIsImlhdCI6MTc0MzU4ODIzMiwianRpIjoiNjJiNzBjYWM4OGZlNGRkN2E2NDg2MzE4YzQ5YmYxZjIiLCJqd3RfdmVyIjoyLCJzdWIiOiJmZTE5MWIxNy0zNWZlLTQwZTItYmYyNy05NTkwYjE0ZjZmZjMiLCJpZGVudGl0eV90eXBlIjoidXNlciIsImFtciI6WyJmZWRlcmF0ZWQiLCJva3RhX3RyaW1ibGUiLCJtZmEiXSwiYXV0aF90aW1lIjoxNzQzNTg4MjMxLCJhenAiOiJkOWQyMWVkMC0xNGU3LTQ4ODctYmE0Yi1kMTJhYzJmMmY0NjYiLCJhY2NvdW50X2lkIjoidHJpbWJsZS1wbGFjZWhvbGRlci1vZi1lbXBsb3llZXMiLCJhdWQiOlsiZDlkMjFlZDAtMTRlNy00ODg3LWJhNGItZDEyYWMyZjJmNDY2Il0sInNjb3BlIjoiVERBQVMiLCJkYXRhX3JlZ2lvbiI6InVzIn0.HbwfIxMp85jggxsUgSl8d79OMByWAeXnqqZhObYlgjx5NBCrGKKBoCnHzIlhyBl7qbL2P6g0zhom9_ApcoaqQTOlzyMXt9X0p2mGYQfd-vqFcos-zXqTPlWhQF59JLwT3nhCHQd51DLBH27u40QAzJoGDOX3JC3s1GRgp7zVmadOBOtIRKvmODGtrc1KzdyN5g1ErtfZK1VO2FHqWcjPsDWTH6wmiD22Feu9h5BbeGyB9fVZeOQXFZXKYoej0UMxrwnTkon1sd4wFaHn7j3bgAQbeRvb7gH6AM9JPA98gZbTPDtFhN3DI0hEYTDqiSzEhJ_dIqRfwcjMbCVwIUMjOQ";
+  agentService.accessToken = access_token || "eyJhbGciOiJSUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2lkLnRyaW1ibGUuY29tIiwiZXhwIjoxNzQzNjc1Njg4LCJuYmYiOjE3NDM2NzIwODgsImlhdCI6MTc0MzY3MjA4OCwianRpIjoiMWZiY2Q2ZmU4NjE4NGEzMGJmYjM4MGNkOGExODA5MGYiLCJqd3RfdmVyIjoyLCJzdWIiOiJmZTE5MWIxNy0zNWZlLTQwZTItYmYyNy05NTkwYjE0ZjZmZjMiLCJpZGVudGl0eV90eXBlIjoidXNlciIsImFtciI6WyJmZWRlcmF0ZWQiLCJva3RhX3RyaW1ibGUiLCJtZmEiXSwiYXV0aF90aW1lIjoxNzQzNjY1MTE0LCJhenAiOiJkOWQyMWVkMC0xNGU3LTQ4ODctYmE0Yi1kMTJhYzJmMmY0NjYiLCJhY2NvdW50X2lkIjoidHJpbWJsZS1wbGFjZWhvbGRlci1vZi1lbXBsb3llZXMiLCJhdWQiOlsiZDlkMjFlZDAtMTRlNy00ODg3LWJhNGItZDEyYWMyZjJmNDY2Il0sInNjb3BlIjoiVERBQVMiLCJkYXRhX3JlZ2lvbiI6InVzIn0.LVbUYAuIKVE5sEyc1JC-TphNURRvcETO5cxSSUPVKHNBvI8cYOTS91k-NyoT_EkCh9jYRok9xvxvfmY6XIsNbdBl1J87kQlZNiGROW00QKGJIO1eZ0f5LGVUH2yVJ16stP14dUdp-4TsRrT4isL7pnYEvVQwQ2pQN2jnmk8v9x_Jlycfjf7IZHIUJIOKtoNhUf9weWpOm22BpXAqqVQclRHWCf74t-LJe6wehnf7QWXELINUbVCu2Yq8pApdIxjHmI-kUsBoMfEOAEIVkDAB4HerKh4bBYiYoZ3JBG7OlHRjzzA6aheSCaNzN1EaFPqX0-SfcvsGSBsPivFXzxJGjg";
   const agentName = selectedModel =='React'?'best-modus-react':'angularp2c';
   const react_sessionId = uuidv4();
   const angular_sessionId = uuidv4();
   const sessionId = selectedModel =='React'? react_sessionId : angular_sessionId;
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [fileInputValue, setFileInputValue] = useState<File | null>(null);
 
   const reactUri = document.getElementById('root')?.getAttribute('data-image-uri') || react_1 || undefined;
+  const angularUri = document.getElementById('root')?.getAttribute('angularLogo') || angularLogo ||undefined;
 
 
   useLayoutEffect(() => {
@@ -65,7 +69,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
     if (textareaRef.current) {
       autoExpand(textareaRef.current);
     }
-  }, [inputValue]); 
+  }, [inputValue,fileInputValue]); 
 
   const handleSendClick = async () => {
     if (inputValue.trim()) {
@@ -101,6 +105,61 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
 
   const handleAttachmentClick = () => {
     console.log("Attachment button clicked");
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setFileInputValue(file);
+      onSendMessage({ text: "Image Succesfully Uploaded", isBot: false, agent: selectedModel });
+      const reader = new FileReader();
+      reader.onload= async () => {
+        const base64String = reader.result?.toString() // Get the base64 part
+        if (base64String) {
+          try {
+            const modusCode = await agentService.processImageToModus(base64String, selectedModel);
+//             const modusCode = `\`\`\`tsx
+// import React from 'react';
+// import { ModusButton } from '@trimble-oss/modus-react-components';
+
+// const MyComponent: React.FC = () => {
+//   return (
+//     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px', overflow: 'auto' }}>
+//       <ModusButton color="primary">Button 1</ModusButton>
+//       <ModusButton color="secondary">Button 2</ModusButton>
+//     </div>
+//   );
+// };
+
+// export default MyComponent;
+// import React from 'react';
+// import { ModusButton } from '@trimble-oss/modus-react-components';
+
+// const MyComponent: React.FC = () => {
+//   return (
+//     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px', overflow: 'auto' }}>
+//       <ModusButton color="primary">Button 1</ModusButton>
+//       <ModusButton color="secondary">Button 2</ModusButton>
+//     </div>
+//   );
+// };
+
+// export default MyComponent;\`\`\``
+            if (modusCode) {
+              onSendMessage({ text: modusCode, isBot: true, agent: selectedModel });
+            } else {
+              console.error("Failed to process image to MODUS code.");
+            }
+          } catch (error) {
+            console.error("Error processing image:", error);
+          }
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const toggleDropdown = () => {
@@ -118,10 +177,17 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
       <div className="footer__container">
         <div className={`input-container ${isOverflowing ? 'overflowing' : ''}`}>
           <div className={`file__container ${isOverflowing ? 'shadow' : ''}`}>
+          {selectedModel === 'React' ? (
             <div className="file__reference">
-              <img src={reactUri} alt="File Reference" />
-              <span>Footer.tsx</span>
+              <img src={reactUri} alt="React File Reference" />
+              <span>React.js</span>
             </div>
+          ) : (
+            <div className="file__reference">
+              <img src={angularUri} alt="Angular File Reference" />
+              <span>Angular.js</span>
+            </div>
+          )}
           </div>
           <textarea
             id="autoExpand"
@@ -138,6 +204,13 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
               <button onClick={handleAttachmentClick}>
                 <img src={attachment} alt="Attach" />
               </button>
+              <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              accept="image/*"
+              onChange={handleFileChange}
+            />
             </div>
             <div className="dropdown">
             <div className="model_selection" onClick={toggleDropdown}>

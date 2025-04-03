@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState,useRef } from 'react';
 import Banner from './components/Banner';
 import Footer from './components/Footer';
 import Message from './components/Message';
@@ -19,12 +19,22 @@ const App = () => {
   const [messages, setMessages] = useState<MessageData[]>([]);
   const [accessToken, setAccessToken] = useState<string | null | undefined>(null);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const chatboxRef = useRef<HTMLDivElement | null>(null); 
 
   useEffect(() => {
     const token = document.getElementById('root')?.getAttribute('accessToken');
     setAccessToken(token);
     console.log("token is", token);
   }, []);
+
+  useEffect(() => {
+    if (chatboxRef.current) {
+      chatboxRef.current.scrollTo({
+        top: chatboxRef.current.scrollHeight,
+        behavior: 'smooth', 
+      });
+    }
+  }, [messages]);
 
   useEffect(() => {
     if (accessToken) {
@@ -64,16 +74,10 @@ const App = () => {
       {messages.length === 0 ? (
         <Banner />
       ) : (
-        <div className="message__chatbox">
+        <div className="message__chatbox" ref={chatboxRef}>
           {messages.map((msg, index) => (
             <Message key={index} message={msg.text} isBot={msg.isBot} agent={msg.agent} userinfo={userInfo}/>
           ))}
-        </div>
-      )}
-      {userInfo && (
-        <div className="user__info">
-          <img src={userInfo.picture} alt="User Profile" />
-          <p>{userInfo.email}</p>
         </div>
       )}
       <Footer onSendMessage={handleSendMessage} access_token={accessToken || ""} />

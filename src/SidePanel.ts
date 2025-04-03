@@ -8,9 +8,18 @@ export class SidePanelProvider implements WebviewViewProvider {
   private _view?: WebviewView;
   private _disposables: Disposable[] = [];
   private context: vscode.ExtensionContext;
+  private currentFile: string = '';
 
   constructor(private readonly extensionUri: Uri, context: vscode.ExtensionContext) {
     this.context = context;
+
+    // Listen for changes in the active text editor
+    vscode.window.onDidChangeActiveTextEditor(editor => {
+      if (editor) {
+        this.currentFile = editor.document.fileName;
+        this.updateWebviewContent();
+      }
+    });
   }
 
   public resolveWebviewView(webviewView: WebviewView, context: WebviewViewResolveContext, token: CancellationToken) {
@@ -35,16 +44,17 @@ export class SidePanelProvider implements WebviewViewProvider {
   public updateWebviewContent() {
     if (this._view) {
       const accessToken = this.context.globalState.get<string>('accessToken');
-      this._view.webview.html = this._getWebviewContent(this._view.webview, this.extensionUri, accessToken);
+      this._view.webview.html = this._getWebviewContent(this._view.webview, this.extensionUri, accessToken, this.currentFile);
     }
   }
 
-  private _getWebviewContent(webview: Webview, extensionUri: Uri, accessToken: string | undefined) {
+  private _getWebviewContent(webview: Webview, extensionUri: Uri, accessToken: string | undefined, currentFile: string) {
     const nonce = getNonce();
     const stylesUri = getUri(webview, extensionUri, ["modus", "build", "assets", "index.css"]);
     const scriptUri = getUri(webview, extensionUri, ["modus", "build", "assets", "index.js"]);
     const reactUri = getUri(webview, extensionUri, ["modus", "build", "react_1.svg"]);
     const moduscoderUri = getUri(webview, extensionUri, ["modus", "build", "modus_coder_logo.png"]);
+    const angularUri = getUri(webview, extensionUri, ["modus", "build","assets","Angular_Logo.png"]);
 
     const isAuthenticated = accessToken && accessToken !== 'NULL';
     const rootId = isAuthenticated ? 'root' : 'root_';
@@ -89,7 +99,7 @@ export class SidePanelProvider implements WebviewViewProvider {
           </style>
         </head>
         <body> 
-          <div id="${rootId}" accessToken="${accessToken || ''}" data-image-uri="${reactUri}" moduslogo="${moduscoderUri}">
+          <div id="${rootId}" accessToken="${accessToken || ''}" data-image-uri="${reactUri}" moduslogo="${moduscoderUri}" angularLogo="${angularUri}">
             ${!isAuthenticated ? `
               <div class="center">
                 <button id="authenticateButton" class="login-button">Login</button>
@@ -118,3 +128,4 @@ export class SidePanelProvider implements WebviewViewProvider {
     this._disposables = [];
   }
 }
+

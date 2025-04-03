@@ -141,6 +141,7 @@
     padding: 4px;
     width: 100%;
     transition: box-shadow 0.3s ease; /* Smooth transition for shadow */
+    display: flex;
 }
 
 /* Add shadow only to the bottom */
@@ -155,6 +156,7 @@
     width: max-content;
     border: 1px solid #686767a1;
     border-radius: 5px;
+    margin-left: 5px;
 }
 
 .file__reference span{
