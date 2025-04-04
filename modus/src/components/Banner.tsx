@@ -10,8 +10,8 @@ const Banner: React.FC = () => {
       <h1>Modus Coder</h1>
       <p>A Trimble Assistant powered Gen-AI tool for creating UI code generation</p>
       <ul className="instructions">
-        <li>📎 or type # to attach context</li>
-        <li>@ to chat with your specified Model</li>
+        <li>📎 for using Image to Code Agent ( Form Components Only )</li>
+        <li>Use the DropDown to select your Model</li>
       </ul>
     </div>
   );

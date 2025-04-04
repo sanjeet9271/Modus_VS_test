@@ -27,7 +27,7 @@
         {
           "id": "moduscoder-sidebar-container",
           "title": "ModusCoder",
-          "icon": "./src/media/chat.svg"
+          "icon": "./src/media/modus_coder_logo.png"
         }
       ]
     },
@@ -37,7 +37,7 @@
           "type": "webview",
           "id": "moduscoder-sidebar",
           "name": "VS code version",
-          "icon": "./src/media/chat.svg"
+          "icon": "./src/media/modus_coder_logo.png"
         }
       ]
     }

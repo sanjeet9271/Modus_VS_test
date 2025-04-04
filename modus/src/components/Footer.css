@@ -34,7 +34,7 @@
     top: 0;
     left: 0;
     width: 0; /* Start with 0 width */
-    height: 3px;
+    height: 2px;
     background-color: #007acc; /* Modus blue */
     box-shadow: 0 0 10px #007acc; /* Neon glow effect */
     transition: width 0.6s ease;
@@ -216,6 +216,10 @@
   
   .dropdown-menu div:hover {
     background-color: #0078d4;
+  }
+
+  pre code.hljs{
+    padding: 0.4rem 0.5rem 0.5rem 0.5rem !important;
   }
 
 
