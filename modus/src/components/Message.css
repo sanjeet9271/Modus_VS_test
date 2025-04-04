@@ -91,3 +91,36 @@
   font-size: 14px; /* Adjust font size */
   line-height: 1.5; /* Improve readability */
 }
+
+.message__body pre{
+  margin-top: 8px;
+  border: 1px solid #555; /* Subtle border for the code block */
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #555 #1e1e1e;
+}
+
+
+
+.message__body pre::-webkit-scrollbar {
+  width: 7px;
+  background-color: #f1f1f1;
+}
+
+.message__body pre::-webkit-scrollbar-thumb {
+  background-color: #c1c1c1;
+}
+
+.message__body pre::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8 !important;
+}
+
+.message__body pre::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(83, 83, 83, 0.07);
+  background-color: #f1f1f1;
+}
+
+.message__body pre::-webkit-scrollbar-button {
+  height: 0 !important; /* Hides the arrows */
+  width: 0 !important; /* Hides the arrows */
+  display: none !important; /* Hides the arrows */
+}

@@ -10,11 +10,11 @@
 .message__chatbox {
     height: auto;
     background-color: #1e1e1e; /* Match VS Code dark theme */
-    scrollbar-width: thin; /* For Firefox */
-    scrollbar-color: #555 #1e1e1e;
     display: flex;
     flex-direction: column;
     overflow-y: auto; /* Ensure vertical scrolling */
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #555 #1e1e1e;
 }
 
 /* Custom scrollbar for WebKit-based browsers (Chrome, Safari, Edge) */
@@ -36,7 +36,7 @@
 }
 
 .message__chatbox::-webkit-scrollbar-button {
-    display: none; /* Hides the arrows */
+    width: 0 !important; /* Hides the arrows */
 }
 
 .message-display {
