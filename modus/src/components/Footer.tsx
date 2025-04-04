@@ -22,7 +22,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
   const [selectedModel, setSelectedModel] = useState('React');
 
   const agentService = new AgentService();
-  agentService.accessToken = access_token || "eyJhbGciOiJSUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2lkLnRyaW1ibGUuY29tIiwiZXhwIjoxNzQzNzQ1MDM1LCJuYmYiOjE3NDM3NDE0MzUsImlhdCI6MTc0Mzc0MTQzNSwianRpIjoiNzA0N2Y0MTNmYWJjNDQ4YWJhNDlkZGJlM2UwZjQwY2EiLCJqd3RfdmVyIjoyLCJzdWIiOiJmZTE5MWIxNy0zNWZlLTQwZTItYmYyNy05NTkwYjE0ZjZmZjMiLCJpZGVudGl0eV90eXBlIjoidXNlciIsImFtciI6WyJmZWRlcmF0ZWQiLCJva3RhX3RyaW1ibGUiLCJtZmEiXSwiYXV0aF90aW1lIjoxNzQzNzQxNDMzLCJhenAiOiJkOWQyMWVkMC0xNGU3LTQ4ODctYmE0Yi1kMTJhYzJmMmY0NjYiLCJhY2NvdW50X2lkIjoidHJpbWJsZS1wbGFjZWhvbGRlci1vZi1lbXBsb3llZXMiLCJhdWQiOlsiZDlkMjFlZDAtMTRlNy00ODg3LWJhNGItZDEyYWMyZjJmNDY2Il0sInNjb3BlIjoiVERBQVMiLCJkYXRhX3JlZ2lvbiI6InVzIn0.nJ9pqpaDkSfaoTH5Z5MoFWtUkubh2Z4cS6J5EW4ADV3YjKB1FyvoNGsa4cp3dwcfdUiywE-rNRiYZ9KRETd-4wOiW8RxQuWFe7UZUZnnBoWWjQHvH1kffSlToYMgCj2idP3Q6pQTUITshHo0HeUG1scxPnlzeHegMll-ZvNlf69Dbo4-Zbc5eeCaIqw3TCDBsP9Y3_R2rJ3OB7BLwLXZSI8ojHDgQpw1QykL002OXLxYFOSAcN9m16d-AEW9Ywcgfyq8HH-yovahvM7xmH3puZIwF63uTof0-YdcVxX6bnYiXLjdmUcGHjfH8z4e5IYbfmkmVfKG4XNVpLRkdji8cA";
+  agentService.accessToken = access_token || "eyJhbGciOiJSUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2lkLnRyaW1ibGUuY29tIiwiZXhwIjoxNzQzNzUyMjAyLCJuYmYiOjE3NDM3NDg2MDIsImlhdCI6MTc0Mzc0ODYwMiwianRpIjoiZTI1ZGIwMmFkZmZiNDNlMzgzZGFhMzkwOWYyZTY4NzgiLCJqd3RfdmVyIjoyLCJzdWIiOiJmZTE5MWIxNy0zNWZlLTQwZTItYmYyNy05NTkwYjE0ZjZmZjMiLCJpZGVudGl0eV90eXBlIjoidXNlciIsImFtciI6WyJmZWRlcmF0ZWQiLCJva3RhX3RyaW1ibGUiLCJtZmEiXSwiYXV0aF90aW1lIjoxNzQzNzQ4NjAwLCJhenAiOiJkOWQyMWVkMC0xNGU3LTQ4ODctYmE0Yi1kMTJhYzJmMmY0NjYiLCJhY2NvdW50X2lkIjoidHJpbWJsZS1wbGFjZWhvbGRlci1vZi1lbXBsb3llZXMiLCJhdWQiOlsiZDlkMjFlZDAtMTRlNy00ODg3LWJhNGItZDEyYWMyZjJmNDY2Il0sInNjb3BlIjoiVERBQVMiLCJkYXRhX3JlZ2lvbiI6InVzIn0.aMQhTDMe7kq6Vs5AnyjlSEK6H8U4ixfUfBbsU3cqoCXaTAC395fWzDUH3BpSZ3PaBhBXnKSr_ukhlaRPpeM4L3CmSCDeg4aGqtp2pyrseR6RUgOxKncJQ5-ctEOWZQtM0vO3ZhhQ972Za2chr7xGumz7shSw2cE-356gpYedd7BIxuK_jgOOb9HtAYky2fvoen0N_EWlNlAD04_NhQgdVBT4fS3psxUQo7meRSvaFmxrYaXTvDdWzv1Rm4wZDx8eC2XHkBu86LjB8oCFBYLN5Melt6vldBxTw2OOXHdj8kGKz0PBd-Zq3_gaESd14m4YguIDFQTNcUI8iwXun_HflA";
   const agentName = selectedModel =='React'?'best-modus-react':'angularp2c';
   const react_sessionId = uuidv4();
   const angular_sessionId = uuidv4();
@@ -128,41 +128,40 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
     if (file) {
       setFileInputValue(file);
       onSendMessage({ text: "Image Succesfully Uploaded !", isBot: false, agent: selectedModel });
-      updateProgress(30);
+      updateProgress(8);
       const reader = new FileReader();
       reader.onload= async () => {
         const base64String = reader.result?.toString() // Get the base64 part
         if (base64String) {
           try {
-            // const modusCode = await agentService.processImageToModus(base64String, selectedModel);
-            updateProgress(80);
-            const modusCode = `\`\`\`tsx
-import React from 'react';
-import { ModusButton } from '@trimble-oss/modus-react-components';
+            const modusCode = await agentService.processImageToModus(base64String, selectedModel,updateProgress);
+//             const modusCode = `\`\`\`tsx
+// import React from 'react';
+// import { ModusButton } from '@trimble-oss/modus-react-components';
 
-const MyComponent: React.FC = () => {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px', overflow: 'auto' }}>
-      <ModusButton color="primary">Button 1</ModusButton>
-      <ModusButton color="secondary">Button 2</ModusButton>
-    </div>
-  );
-};
+// const MyComponent: React.FC = () => {
+//   return (
+//     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px', overflow: 'auto' }}>
+//       <ModusButton color="primary">Button 1</ModusButton>
+//       <ModusButton color="secondary">Button 2</ModusButton>
+//     </div>
+//   );
+// };
 
-export default MyComponent;
-import React from 'react';
-import { ModusButton } from '@trimble-oss/modus-react-components';
+// export default MyComponent;
+// import React from 'react';
+// import { ModusButton } from '@trimble-oss/modus-react-components';
 
-const MyComponent: React.FC = () => {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px', overflow: 'auto' }}>
-      <ModusButton color="primary">Button 1</ModusButton>
-      <ModusButton color="secondary">Button 2</ModusButton>
-    </div>
-  );
-};
+// const MyComponent: React.FC = () => {
+//   return (
+//     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px', overflow: 'auto' }}>
+//       <ModusButton color="primary">Button 1</ModusButton>
+//       <ModusButton color="secondary">Button 2</ModusButton>
+//     </div>
+//   );
+// };
 
-export default MyComponent;\`\`\``
+// export default MyComponent;\`\`\``
             if (modusCode) {
               updateProgress(100);
               onSendMessage({ text: modusCode, isBot: true, agent: selectedModel });

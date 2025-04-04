@@ -214,7 +214,7 @@ export class AgentService {
     return modusCode;
   }
 
-  public async processImageToModus(imageSrc: string, selectedModel: string): Promise<string | undefined> {
+  public async processImageToModus(imageSrc: string, selectedModel: string,updateProgress:(value: number) => void): Promise<string | undefined> {
     try {
       // Step 1: Validate the image
       const isImageValid = await this.validateImage(imageSrc);
@@ -222,6 +222,7 @@ export class AgentService {
         console.error("Image validation failed.");
         return undefined;
       }
+      updateProgress(20);
   
       // Step 2: Convert image to generic code
       const genericCode = await this.convertImageToGenericCode(imageSrc);
@@ -229,6 +230,7 @@ export class AgentService {
         console.error("Failed to convert image to generic code.");
         return undefined;
       }
+      updateProgress(40);
   
       // Step 3: Comment the code
       const commentedCode = await this.commentCode(genericCode);
@@ -236,6 +238,7 @@ export class AgentService {
         console.error("Failed to comment the code.");
         return undefined;
       }
+      updateProgress(60);
   
       // Step 4: Validate the components
       const isComponentValid = await this.validateComponent(commentedCode);
@@ -243,6 +246,7 @@ export class AgentService {
         console.error("Component validation failed.");
         return undefined;
       }
+      updateProgress(80);
   
       // Step 5: Convert to MODUS code
       const modusCode = await this.convertToModus(commentedCode, selectedModel);
@@ -250,6 +254,7 @@ export class AgentService {
         console.error("Failed to convert to MODUS code.");
         return undefined;
       }
+      updateProgress(95);
   
       return modusCode;
     } catch (error) {
