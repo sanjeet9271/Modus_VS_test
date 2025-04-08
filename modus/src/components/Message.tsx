@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/vs2015.css'; 
 import './Message.css';
+import copy from '../assets/copy.svg'
 
 interface UserInfo {
   email: string;
@@ -17,8 +18,8 @@ interface MessageProps {
 
 const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) => {
   const codeRefs = useRef<(HTMLElement | null)[]>([]);
-  const [buttonText, setButtonText] = useState('Copy');
-  const [isFocused, setIsFocused] = useState(false); // New state for focus
+  const [buttonText, setButtonText] = useState<string[]>(['Copy', 'Copy']);
+  const [isFocused, setIsFocused] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const moduslogourl = document.getElementById('root')?.getAttribute('moduslogo');
@@ -69,13 +70,18 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
     };
   }, []);
 
-  const handleCopy = () => {
-    const allCode = codeContents.join('\n\n');
+  const handleCopy = (index: number) => {
+    const contentToCopy = codeContents[index];
     navigator.clipboard
-      .writeText(allCode)
+      .writeText(contentToCopy)
       .then(() => {
-        setButtonText('Copied');
-        setTimeout(() => setButtonText('Copy'), 2000);
+        const newButtonText = [...buttonText];
+        newButtonText[index] = 'Copied';
+        setButtonText(newButtonText);
+        setTimeout(() => {
+          newButtonText[index] = 'Copy';
+          setButtonText(newButtonText);
+        }, 2000);
       })
       .catch((err) => {
         console.error('Failed to copy: ', err);
@@ -87,11 +93,11 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
       ref={containerRef}
       className={`message__container ${
         isBot ? 'message__container--bot' : 'message__container--user'
-      } ${isFocused ? 'focused' : ''}`} // Add focused class conditionally
-      onClick={() => setIsFocused(true)} // Set focus state on click
+      } ${isFocused ? 'focused' : ''}`} 
+      onClick={() => setIsFocused(true)} 
     >
       <div className="message__avatar">
-        <img
+      <img
           src={
             isBot
               ? moduslogourl || 'https://avatars.githubusercontent.com/u/194470184?v=4&size=64'
@@ -106,21 +112,32 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
       <div className="message__body">
         {isCode ? (
           <div>
-            {codeContents.map((content, index) => (
-              <pre key={index}>
-                <code
-                  ref={(el) => {
-                    codeRefs.current[index] = el;
-                  }}
-                  className={agent === 'React' ? 'tsx' : index === 0 ? 'html' : 'typescript'}
-                >
-                  {content}
-                </code>
-              </pre>
-            ))}
-            <button onClick={handleCopy} className="copy-button">
-              {buttonText}
-            </button>
+            {codeContents.map((content, index) => {
+              const language = agent === 'React' ? 'tsx' : index === 0 ? 'html' : 'typescript';
+              return (
+                <div key={index} className='code__container'>
+                  <div className="code__header">
+                    <div className="language-label">{language.toUpperCase()}</div>
+                    <img
+                      src={copy}
+                      alt="Copy"
+                      className="copy-icon"
+                      onClick={() => handleCopy(index)}
+                    />
+                  </div>
+                  <pre>
+                    <code
+                      ref={(el) => {
+                        codeRefs.current[index] = el;
+                      }}
+                      className={language}
+                    >
+                      {content}
+                    </code>
+                  </pre>
+                </div>
+              );
+            })}
           </div>
         ) : (
           <p>{message}</p>

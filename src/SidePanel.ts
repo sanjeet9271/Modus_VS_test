@@ -13,7 +13,6 @@ export class SidePanelProvider implements WebviewViewProvider {
   constructor(private readonly extensionUri: Uri, context: vscode.ExtensionContext) {
     this.context = context;
 
-    // Listen for changes in the active text editor
     vscode.window.onDidChangeActiveTextEditor(editor => {
       if (editor) {
         this.currentFile = editor.document.fileName;
@@ -57,7 +56,6 @@ export class SidePanelProvider implements WebviewViewProvider {
     const angularUri = getUri(webview, extensionUri, ["modus", "build","assets","Angular_Logo.png"]);
 
     const isAuthenticated = accessToken && accessToken !== 'NULL';
-    const rootId = isAuthenticated ? 'root' : 'root_';
 
     return /*html*/ `
       <!DOCTYPE html>
@@ -66,57 +64,43 @@ export class SidePanelProvider implements WebviewViewProvider {
           <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <meta http-equiv="Content-Security-Policy" content="
-            default-src 'none'; 
-            style-src ${webview.cspSource} 'nonce-${nonce}'; 
-            script-src ${webview.cspSource} 'nonce-${nonce}'; 
-            img-src ${webview.cspSource} self https://modus-coder.trimble.cloud https://avatars.githubusercontent.com https://us.id.trimble.com data:; 
-            font-src ${webview.cspSource} https://*.vscode-cdn.net; 
-            connect-src ${webview.cspSource} https://agw.construction-integration.trimble.cloud https://id.trimble.com;
-          ">
+              default-src 'none'; 
+              style-src ${webview.cspSource} 'nonce-${nonce}' https://fonts.googleapis.com; 
+              script-src ${webview.cspSource} 'nonce-${nonce}'; 
+              img-src ${webview.cspSource} self https://modus-coder.trimble.cloud https://avatars.githubusercontent.com https://us.id.trimble.com data:; 
+              font-src ${webview.cspSource} https://*.vscode-cdn.net https://fonts.googleapis.com https://fonts.gstatic.com; 
+              connect-src ${webview.cspSource} https://agw.construction-integration.trimble.cloud https://id.trimble.com;
+            ">
           <link rel="stylesheet" type="text/css" href="${stylesUri}" nonce="${nonce}">
+          <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
           <title>Modus Coder</title>
-          <style nonce="${nonce}">
-            .login-button {
-              padding: 12px 24px;
-              font-size: 16px;
-              color: #ffffff;
-              background-color: #007acc;
-              border: none;
-              border-radius: 5px;
-              cursor: pointer;
-              transition: background-color 0.3s ease;
-              margin-top: 20px;
-            }
-            .login-button:hover {
-              background-color: #005f99;
-            }
-            .center {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              height: 100vh;
-            }
-          </style>
         </head>
         <body> 
-          <div id="${rootId}" accessToken="${accessToken || ''}" data-image-uri="${reactUri}" moduslogo="${moduscoderUri}" angularLogo="${angularUri}">
-            ${!isAuthenticated ? `
-              <div class="center">
-                <button id="authenticateButton" class="login-button">Login</button>
-              </div>` : ''}
+          <div id="root" class="monaco-workbench" accessToken="${accessToken || ''}" data-image-uri="${reactUri}" moduslogo="${moduscoderUri}" angularLogo="${angularUri}">
           </div>
-          <script nonce="${nonce}">
-            const vscode = acquireVsCodeApi();
-            document.getElementById('authenticateButton')?.addEventListener('click', () => {
-              console.log('Authenticate button clicked');
-              vscode.postMessage({ command: 'authenticate' });
-            });
-
-            if (document.getElementById('root_') && document.getElementById('root_').getAttribute('accessToken') !== 'NULL') {
-              document.getElementById('root_').id = 'root';
-            }
-          </script>
           <script type="module" src="${scriptUri}" nonce="${nonce}"></script>
+          <script nonce="${nonce}">
+            const isAuthenticated = ${isAuthenticated ? 'true' : 'false'};
+            
+            function checkElementAvailability() {
+              console.log(isAuthenticated);
+              if (!isAuthenticated) {
+                const authenticateButton = document.getElementById('authenticateButton');
+                if (authenticateButton) {
+                  console.log(authenticateButton);
+                  const vscode = acquireVsCodeApi();
+
+                  authenticateButton.addEventListener('click', () => {
+                    console.log('Authenticate button clicked!');
+                    vscode.postMessage({ command: 'authenticate' });
+                  });
+                } else {
+                  setTimeout(checkElementAvailability, 100);
+                }
+              }
+            }
+            checkElementAvailability();
+          </script>
         </body>
       </html>
     `;

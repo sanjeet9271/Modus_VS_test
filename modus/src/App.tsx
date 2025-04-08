@@ -23,6 +23,7 @@ const App = () => {
 
   useEffect(() => {
     const token = document.getElementById('root')?.getAttribute('accessToken');
+    // const token =  "eyJhbGciOiJSUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2lkLnRyaW1ibGUuY29tIiwiZXhwIjoxNzQ0MTA0NDk4LCJuYmYiOjE3NDQxMDA4OTgsImlhdCI6MTc0NDEwMDg5OCwianRpIjoiNDcwMTNjNWM1MGIwNGMwYmEyNDRhNjEwYzk2MjkwYzkiLCJqd3RfdmVyIjoyLCJzdWIiOiJmZTE5MWIxNy0zNWZlLTQwZTItYmYyNy05NTkwYjE0ZjZmZjMiLCJpZGVudGl0eV90eXBlIjoidXNlciIsImFtciI6WyJmZWRlcmF0ZWQiLCJva3RhX3RyaW1ibGUiLCJtZmEiXSwiYXV0aF90aW1lIjoxNzQ0MDkzODQyLCJhenAiOiJkOWQyMWVkMC0xNGU3LTQ4ODctYmE0Yi1kMTJhYzJmMmY0NjYiLCJhY2NvdW50X2lkIjoidHJpbWJsZS1wbGFjZWhvbGRlci1vZi1lbXBsb3llZXMiLCJhdWQiOlsiZDlkMjFlZDAtMTRlNy00ODg3LWJhNGItZDEyYWMyZjJmNDY2Il0sInNjb3BlIjoiVERBQVMiLCJkYXRhX3JlZ2lvbiI6InVzIn0.SiKx8IbQUIpvI6TDDh9wp6Z4V1fUclGIUK24PHAY6fMZZuZ_dzSRg1uAYESrl5jeXOLzKUx9tJHi4XRylu1m9YS6FK254676_qADipY_PX6yTFuo3bScDVtZk-ckserxo2CPgRCVA19_xzOQsnrzxuCdJzTNLTeJ4OLKalcVBdtDlTo24TRNJr24Od1EGv27FgPXTwfWv1PzD1ijJBW4t8-ikQKpllD2gyWAoUhZfY13TL2SxoPsRn33KZKVAzLm5Mkeg85kQd27m3lrJVkAJ7vAcMkEBnLh2uf5ihh6ERCDZhMyVTlhPnEcX8ePJ7ukk2p8h-zsZDD39XFnLK1ilA";
     setAccessToken(token);
     console.log("token is", token);
   }, []);
@@ -37,7 +38,7 @@ const App = () => {
   }, [messages]);
 
   useEffect(() => {
-    if (accessToken) {
+    if (accessToken != 'NULL' && accessToken) {
       fetchUserInfo(accessToken);
     }
   }, [accessToken]);
@@ -65,12 +66,17 @@ const App = () => {
     }
   };
 
-  const handleSendMessage = (newMessage: MessageData) => {
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
+  const handleSendMessage = (newMessage: MessageData, action: 'add' | 'empty') => {
+    if (action === 'add') {
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+    } else if (action === 'empty') {
+      setMessages([]);
+    }
   };
+  
 
   return (
-    <div className="main__container">
+    <div id='main' className="main__container">
       {messages.length === 0 ? (
         <Banner />
       ) : (

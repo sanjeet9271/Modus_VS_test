@@ -6,11 +6,11 @@
 
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Open Sans', sans-serif;
     background-color: #1e1e1e;
     color: #ffffff;
-
 }
+
 
 .container {
     display: flex;

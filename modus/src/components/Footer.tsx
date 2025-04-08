@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState, useRef} from 'react';
-import at2 from "../assets/at_2.svg";
+import refresh from "../assets/refresh.svg";
 import attachment from "../assets/attachment.svg";
 import arrow from "../assets/arrow.svg";
 import send from "../assets/send.svg";
@@ -10,7 +10,7 @@ import angularLogo from "../assets/Angular_Logo.png";
 import { v4 as uuidv4 } from 'uuid';
 
 interface FooterProps {
-  onSendMessage: (message: { text: string; isBot: boolean ;agent: string }) => void;
+  onSendMessage: (message: { text: string; isBot: boolean ;agent: string },action: 'add' | 'empty') => void;
   access_token:string;
 }
 
@@ -22,7 +22,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
   const [selectedModel, setSelectedModel] = useState('React');
 
   const agentService = new AgentService();
-  agentService.accessToken = access_token || "eyJhbGciOiJSUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2lkLnRyaW1ibGUuY29tIiwiZXhwIjoxNzQzNzYwNDA4LCJuYmYiOjE3NDM3NTY4MDgsImlhdCI6MTc0Mzc1NjgwOCwianRpIjoiYjczMTRhNzQ0NTI0NGJkNzkxYTg4OTBkZTdiN2Y2YzAiLCJqd3RfdmVyIjoyLCJzdWIiOiJmZTE5MWIxNy0zNWZlLTQwZTItYmYyNy05NTkwYjE0ZjZmZjMiLCJpZGVudGl0eV90eXBlIjoidXNlciIsImFtciI6WyJmZWRlcmF0ZWQiLCJva3RhX3RyaW1ibGUiLCJtZmEiXSwiYXV0aF90aW1lIjoxNzQzNzQ4NjAwLCJhenAiOiJkOWQyMWVkMC0xNGU3LTQ4ODctYmE0Yi1kMTJhYzJmMmY0NjYiLCJhY2NvdW50X2lkIjoidHJpbWJsZS1wbGFjZWhvbGRlci1vZi1lbXBsb3llZXMiLCJhdWQiOlsiZDlkMjFlZDAtMTRlNy00ODg3LWJhNGItZDEyYWMyZjJmNDY2Il0sInNjb3BlIjoiVERBQVMiLCJkYXRhX3JlZ2lvbiI6InVzIn0.LkYdR03k2dnZhyxtYDkJUisgCRmearUb4dlYzVMsYDzJimpgpw_czvKCCxBJoQyeMJpu3f_Wpq_cvv-jeiIISoh6rqVgi7UBzNkmQIdU22yBHIHNQtn7Pqm0v5aAqyU7l6W4h-pAVFviHMQVFreG0stfYqtzsp_A-irrlGFe3WZ0tovybHf0ESPxgTI_ze5nOAK5rfNmUwDTpbubqS_kpJAZIpNXyOTkhs4pIiqLuzjKS-7YJYqwdfTOSfoCKoH1YITgM-2UjlkmdKoqWT7pZvydiT0yELydHz-ehmvQJ-OsUyViU-8zmbmwXk7Qp4U-i7lS99zEMPDKz99punw-gA";
+  agentService.accessToken = access_token;
   const agentName = selectedModel =='React'?'best-modus-react':'angularp2c';
   const react_sessionId = uuidv4();
   const angular_sessionId = uuidv4();
@@ -62,7 +62,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
       }
 
       if (container && chatbox) {
-        const footerHeight = container.offsetHeight + 20; // Include the extra 20px
+        const footerHeight = container.offsetHeight + 20; 
         chatbox.style.height = `calc(100vh - ${footerHeight}px)`; 
         chatbox.style.overflowY = 'auto';
       }
@@ -79,9 +79,9 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
 
   const handleSendClick = async () => {
     if (inputValue.trim()) {
-      onSendMessage({ text: inputValue, isBot: false, agent: selectedModel });
+      onSendMessage({ text: inputValue, isBot: false, agent: selectedModel },'add');
       setInputValue('');
-      updateProgress(10); // Start progress at 10%
+      updateProgress(10); 
   
       if (textareaRef.current) {
         textareaRef.current.style.height = 'inherit';
@@ -89,7 +89,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
       }
   
       try {
-        updateProgress(30); // Update progress to 30% while waiting for response
+        updateProgress(30);
         const botResponse = await agentService.getGeneralAssistantResponse(
           agentName,
           inputValue,
@@ -98,27 +98,29 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
   
         if (botResponse) {
           updateProgress(80);
-          onSendMessage({ text: botResponse, isBot: true, agent: selectedModel });
-          updateProgress(100); // Complete progress at 100%
+          onSendMessage({ text: botResponse, isBot: true, agent: selectedModel },'add');
+          updateProgress(100); 
         } else {
           console.error('Bot response is undefined');
-          updateProgress(0); // Reset progress if response is undefined
+          updateProgress(0); 
         }
       } catch (error) {
         console.error('Error fetching bot response:', error);
-        updateProgress(0); // Reset progress on error
+        updateProgress(0); 
       }
     }
   };
   
 
   const handleAtClick = () => {
-    console.log("At button clicked");
+    if(access_token !== 'NULL') {
+      onSendMessage({ text: "empty", isBot: false, agent: selectedModel }, 'empty');
+    }
   };
 
   const handleAttachmentClick = () => {
     console.log("Attachment button clicked");
-    if (fileInputRef.current) {
+    if (fileInputRef.current && access_token !== 'NULL') {
       fileInputRef.current.click();
     }
   };
@@ -127,7 +129,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
     const file = event.target.files?.[0];
     if (file) {
       setFileInputValue(file);
-      onSendMessage({ text: "Image Succesfully Uploaded !", isBot: false, agent: selectedModel });
+      onSendMessage({ text: "Image Succesfully Uploaded !", isBot: false, agent: selectedModel },'add');
       updateProgress(8);
       const reader = new FileReader();
       reader.onload= async () => {
@@ -164,7 +166,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
 // export default MyComponent;\`\`\``
             if (modusCode) {
               updateProgress(100);
-              onSendMessage({ text: modusCode, isBot: true, agent: selectedModel });
+              onSendMessage({ text: modusCode, isBot: true, agent: selectedModel },'add');
             } else {
               updateProgress(0);
               console.error("Failed to process image to MODUS code.");
@@ -188,24 +190,23 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
     setIsDropdownOpen(false);
   };
 
-
   return (
     <div className="footer__wrapper">
       <div className="progress-bar" style={{ width: `${progress}%` }}></div>
-       <div className={`footer__container ${isFocused ? 'focused' : ''}`}>
+      <div className={`footer__container ${isFocused ? 'focused' : ''}`}>
         <div className={`input-container ${isOverflowing ? 'overflowing' : ''}`}>
           <div className={`file__container ${isOverflowing ? 'shadow' : ''}`}>
-          {selectedModel === 'React' ? (
-            <div className="file__reference">
-              <img src={reactUri} alt="React File Reference" />
-              <span>React.js</span>
-            </div>
-          ) : (
-            <div className="file__reference">
-              <img src={angularUri} alt="Angular File Reference" />
-              <span>Angular.js</span>
-            </div>
-          )}
+            {selectedModel === 'React' ? (
+              <div className="file__reference">
+                <img src={reactUri} alt="React File Reference" />
+                <span>React.js</span>
+              </div>
+            ) : (
+              <div className="file__reference">
+                <img src={angularUri} alt="Angular File Reference" />
+                <span>Angular.js</span>
+              </div>
+            )}
           </div>
           <textarea
             id="autoExpand"
@@ -221,42 +222,50 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
           ></textarea>
           <div className="toolbar">
             <div className="input-actions">
-              <button onClick={handleAtClick}>
-                <img src={at2} alt="At" />
+              <button onClick={handleAtClick} className={access_token === 'NULL' || !access_token ? 'disabled-icon' : ''}>
+                <img src={refresh} alt="Refresh" />
               </button>
-              <button onClick={handleAttachmentClick}>
+              <button onClick={handleAttachmentClick} className={access_token === 'NULL' || !access_token ? 'disabled-icon' : ''}>
                 <img src={attachment} alt="Attach" />
               </button>
               <input
-              type="file"
-              ref={fileInputRef}
-              style={{ display: 'none' }}
-              accept="image/*"
-              onChange={handleFileChange}
-            />
+                type="file"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                accept="image/*"
+                onChange={handleFileChange}
+              />
             </div>
             <div className="dropdown">
-            <div className="model_selection" onClick={toggleDropdown}>
-                <button>
-                  <span>{selectedModel}</span>
-                  <img src={arrow} alt="Arrow" />
+              {access_token === 'NULL' || !access_token ? (
+                <div className="login-button">
+                  <button id="authenticateButton">Login to continue</button>
+                </div>
+              ) : (
+                <>
+                <div className="model_selection" onClick={toggleDropdown}>
+                  <button>
+                    <span>{selectedModel}</span>
+                    <img src={arrow} alt="Arrow" />
+                  </button>
+                  {isDropdownOpen && (
+                    <div className="dropdown-menu">
+                      <div onClick={() => selectModel('React')}>React</div>
+                      <div onClick={() => selectModel('Angular')}>Angular</div>
+                    </div>
+                  )}
+                </div>
+                <button onClick={handleSendClick}>
+                  <img src={send} alt="Send" />
                 </button>
-                {isDropdownOpen && (
-                  <div className="dropdown-menu">
-                    <div onClick={() => selectModel('React')}>React</div>
-                    <div onClick={() => selectModel('Angular')}>Angular</div>
-                  </div>
-                )}
-              </div>
-              <button onClick={handleSendClick}>
-                <img src={send} alt="Send" />
-              </button>
+              </>
+              )}
             </div>
           </div>
         </div>
       </div>
     </div>
-  );
+  );    
 };
 
 export default Footer;
