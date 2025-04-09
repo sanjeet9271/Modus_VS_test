@@ -84,8 +84,8 @@
 }
 
 .message__body pre {
-  border: 1px solid var(--vscode-editorLineNumber-foreground); /* Line number foreground color */
-  scrollbar-width: thin; /* For Firefox */
+  border: 1px solid var(--vscode-editorLineNumber-foreground); 
+  scrollbar-width: thin; 
   scrollbar-color: var(--vscode-editorLineNumber-foreground) var(--vscode-editor-background);
 }
 
