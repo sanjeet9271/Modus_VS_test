@@ -9,17 +9,11 @@ let extensionContext: vscode.ExtensionContext; // Global variable to store conte
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "moduscoder" is now active!');
 
-  // Store the context globally
   extensionContext = context;
   extensionContext.globalState.update('accessToken','NULL');
   if (sidePanelProvider) {
     sidePanelProvider.updateWebviewContent();
   }
-
-  const helloWorldDisposable = vscode.commands.registerCommand('moduscoder.helloWorld', () => {
-    vscode.window.showInformationMessage('Hello World from ModusCoder!');
-  });
-  context.subscriptions.push(helloWorldDisposable);
 
   const authenticateDisposable = vscode.commands.registerCommand('moduscoder.authenticate', async () => {
     await authenticate(context);

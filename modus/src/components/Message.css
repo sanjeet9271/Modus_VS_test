@@ -27,29 +27,29 @@
 
 .username {
   margin-left: 8px;
-  flex-grow: 1; /* Allow the username to take up available space */
-  white-space: nowrap; /* Prevent text from wrapping */
+  flex-grow: 1; 
+  white-space: nowrap; 
 }
 
 .username--clicked {
-  border: 1.3px solid var(--vscode-editorCursor-foreground); /* Cursor foreground color */
+  border: 1.3px solid var(--vscode-editorCursor-foreground); 
 }
 
 .message__avatar img {
   width: 30px;
   height: 30px;
   border-radius: 50%; 
-  border: 1px solid var(--vscode-editorLineNumber-foreground); /* Line number foreground color */
+  border: 1px solid var(--vscode-editorLineNumber-foreground); 
 }
 
 .message__body p {
   font-size: 12px;
   margin: 0;
-  color: var(--vscode-editor-foreground); /* Description foreground color */
+  color: var(--vscode-editor-foreground);
 }
 
 .message__container {
-  position: relative; /* Ensure the container is positioned relative for absolute positioning */
+  position: relative; 
 }
 
 .code__header {
@@ -60,7 +60,7 @@
 }
 
 .copy-icon {
-  width: 16px; /* Size of the icon */
+  width: 16px; 
   height: 16px;
   cursor: pointer;
   transition: opacity 0.3s ease;
@@ -68,7 +68,7 @@
 }
 
 .copy-icon:hover {
-  opacity: 0.7; /* Slightly fade the icon on hover for visual feedback */
+  opacity: 0.7; 
 }
 
 .code__container pre {
@@ -92,5 +92,5 @@
 .language-label {
   font-size: 0.9em;
   font-weight: bold;
-  color: var(--vscode-editor-foreground); /* Description foreground color */
+  color: var(--vscode-editor-foreground); 
 }

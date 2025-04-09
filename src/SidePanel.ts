@@ -26,11 +26,13 @@ export class SidePanelProvider implements WebviewViewProvider {
 
     webviewView.webview.options = {
       enableScripts: true,
-      localResourceRoots: [Uri.joinPath(this.extensionUri, "modus", "build")],
+      localResourceRoots: [
+        Uri.joinPath(this.extensionUri, "modus", "build"),
+        Uri.joinPath(this.extensionUri, "node_modules", "@vscode", "codicons", "dist")
+      ],
     };
 
     this.updateWebviewContent();
-
     webviewView.webview.onDidReceiveMessage(this.handleMessage.bind(this));
   }
 
@@ -54,6 +56,7 @@ export class SidePanelProvider implements WebviewViewProvider {
     const reactUri = getUri(webview, extensionUri, ["modus", "build", "react_1.svg"]);
     const moduscoderUri = getUri(webview, extensionUri, ["modus", "build", "modus_coder_logo.png"]);
     const angularUri = getUri(webview, extensionUri, ["modus", "build","assets","Angular_Logo.png"]);
+    const codiconsUri = getUri(webview, extensionUri, ['node_modules', '@vscode', 'codicons', 'dist', 'codicon.css']);
 
     const isAuthenticated = accessToken && accessToken !== 'NULL';
 
@@ -65,14 +68,15 @@ export class SidePanelProvider implements WebviewViewProvider {
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <meta http-equiv="Content-Security-Policy" content="
               default-src 'none'; 
-              style-src ${webview.cspSource} 'nonce-${nonce}' https://fonts.googleapis.com; 
+              style-src ${webview.cspSource} 'nonce-${nonce}' https://fonts.googleapis.com file:; 
               script-src ${webview.cspSource} 'nonce-${nonce}'; 
               img-src ${webview.cspSource} self https://modus-coder.trimble.cloud https://avatars.githubusercontent.com https://us.id.trimble.com data:; 
               font-src ${webview.cspSource} https://*.vscode-cdn.net https://fonts.googleapis.com https://fonts.gstatic.com; 
               connect-src ${webview.cspSource} https://agw.construction-integration.trimble.cloud https://id.trimble.com;
-            ">
+          ">
           <link rel="stylesheet" type="text/css" href="${stylesUri}" nonce="${nonce}">
           <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+          <link href="${codiconsUri}" rel="stylesheet" />
           <title>Modus Coder</title>
         </head>
         <body> 

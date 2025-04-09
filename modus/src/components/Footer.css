@@ -90,12 +90,6 @@
     height: 20px;
 }
 
-.toolbar button img {
-    margin: 2px;
-    height: 15px;
-    filter: invert(95%);
-}
-
 .toolbar button {
     display: flex;
     align-items: center;
@@ -115,11 +109,6 @@
     font-size: 12px;
 }
 
-.model_selection button img {
-    height: 10px;
-    margin-right: 5px;
-    filter: invert(90%);
-}
 
 .model_selection {
     display: flex;
@@ -191,7 +180,7 @@
     position: absolute;
     top: -65px; 
     right: 0px;
-    background-color: var(--vscode-dropdown-background); /* Dropdown background color */
+    background-color: var(--vscode-sideBar-background); /* Dropdown background color */
     border-radius: 4px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
     z-index: 1000;
@@ -211,7 +200,7 @@
 }
 
 .dropdown-menu div:hover {
-    background-color: var(--vscode-dropdown-hoverBackground); /* Dropdown hover background color */
+    background-color: var(--vscode-focusBorder); /* Dropdown hover background color */
 }
 
 pre code.hljs {
@@ -219,13 +208,21 @@ pre code.hljs {
 }
 
 .login-button {
-    color: var(--vscode-button-foreground); /* Button foreground color */
-    border: none;
-    border-radius: 5px;
+    display: inline-block;
+}
+
+#authenticateButton {
+    color: var(--vscode-button-foreground); 
+    background-color: var(--vscode-button-background); 
     padding: 5px 10px;
     cursor: pointer;
+    border-radius: 2px;
     font-size: 11px !important;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#authenticateButton:hover {
+    background-color: var(--vscode-button-hoverBackground); 
 }
 
 .disabled-icon {

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@trimble-oss/trimble-id-react": "^1.0.0",
+    "@vscode/codicons": "^0.0.36",
     "highlight.js": "^11.11.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -1,8 +1,4 @@
 import React, { useLayoutEffect, useState, useRef} from 'react';
-import refresh from "../assets/refresh.svg";
-import attachment from "../assets/attachment.svg";
-import arrow from "../assets/arrow.svg";
-import send from "../assets/send.svg";
 import "./Footer.css";
 import { AgentService } from './AgentService';
 import react_1 from "../assets/react_1.svg";
@@ -137,33 +133,6 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
         if (base64String) {
           try {
             const modusCode = await agentService.processImageToModus(base64String, selectedModel,updateProgress);
-//             const modusCode = `\`\`\`tsx
-// import React from 'react';
-// import { ModusButton } from '@trimble-oss/modus-react-components';
-
-// const MyComponent: React.FC = () => {
-//   return (
-//     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px', overflow: 'auto' }}>
-//       <ModusButton color="primary">Button 1</ModusButton>
-//       <ModusButton color="secondary">Button 2</ModusButton>
-//     </div>
-//   );
-// };
-
-// export default MyComponent;
-// import React from 'react';
-// import { ModusButton } from '@trimble-oss/modus-react-components';
-
-// const MyComponent: React.FC = () => {
-//   return (
-//     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px', overflow: 'auto' }}>
-//       <ModusButton color="primary">Button 1</ModusButton>
-//       <ModusButton color="secondary">Button 2</ModusButton>
-//     </div>
-//   );
-// };
-
-// export default MyComponent;\`\`\``
             if (modusCode) {
               updateProgress(100);
               onSendMessage({ text: modusCode, isBot: true, agent: selectedModel },'add');
@@ -211,7 +180,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
           <textarea
             id="autoExpand"
             ref={textareaRef}
-            placeholder="Enter your Query"
+            placeholder={access_token === "NULL" || !access_token ? "Please login to continue..." : "Enter your query here..."}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onFocus={() => {
@@ -219,14 +188,15 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
               updateProgress(0); 
             }}
             onBlur={() => setIsFocused(false)}
+            disabled={access_token === "NULL" || !access_token} 
           ></textarea>
           <div className="toolbar">
             <div className="input-actions">
               <button onClick={handleAtClick} className={access_token === 'NULL' || !access_token ? 'disabled-icon' : ''}>
-                <img src={refresh} alt="Refresh" />
+                <i className='codicon codicon-refresh'></i>
               </button>
               <button onClick={handleAttachmentClick} className={access_token === 'NULL' || !access_token ? 'disabled-icon' : ''}>
-                <img src={attachment} alt="Attach" />
+                <i className='codicon codicon-link'></i>
               </button>
               <input
                 type="file"
@@ -239,14 +209,14 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
             <div className="dropdown">
               {access_token === 'NULL' || !access_token ? (
                 <div className="login-button">
-                  <button id="authenticateButton">Login to continue</button>
+                  <button id="authenticateButton">Login</button>
                 </div>
               ) : (
                 <>
                 <div className="model_selection" onClick={toggleDropdown}>
                   <button>
                     <span>{selectedModel}</span>
-                    <img src={arrow} alt="Arrow" />
+                    <i className='codicon codicon-chevron-down'></i>
                   </button>
                   {isDropdownOpen && (
                     <div className="dropdown-menu">
@@ -256,7 +226,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
                   )}
                 </div>
                 <button onClick={handleSendClick}>
-                  <img src={send} alt="Send" />
+                  <i className='codicon codicon-send'></i>
                 </button>
               </>
               )}
