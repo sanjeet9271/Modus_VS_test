@@ -1,12 +1,12 @@
 import React from 'react';
-import "./Banner.css";
+import "./Banner.css"
 
 const Banner: React.FC = () => {
-  const modusLogoUri = document.getElementById('root')?.getAttribute('moduslogo') || ''; 
+  const modusLogoUri = document.getElementById('root')?.getAttribute('moduslogo') || "https://modus-coder.trimble.cloud/assets/Images/modus-coder-logo.png";
   return (
     <div className="banner">
-      <div className="logo">
-      <i className="modus-logo" style={{ backgroundImage: `url(${modusLogoUri})` }} aria-label="Modus Coder Logo"></i>
+        <div className="logo">
+        <img className='modus-logo' src={modusLogoUri} alt="Modus Coder Logo" />
       </div>
       <h1>Modus Coder</h1>
       <p>A Trimble Assistant powered Gen-AI tool for creating UI code generation</p>

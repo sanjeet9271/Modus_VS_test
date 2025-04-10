@@ -8,9 +8,10 @@ import { v4 as uuidv4 } from 'uuid';
 interface FooterProps {
   onSendMessage: (message: { text: string; isBot: boolean ;agent: string },action: 'add' | 'empty') => void;
   access_token:string;
+  messages: { text: string; isBot: boolean; agent: string }[];
 }
 
-const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
+const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token,messages}) => {
   const [inputValue, setInputValue] = useState('');
   const [isOverflowing, setIsOverflowing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -67,7 +68,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
     if (textareaRef.current) {
       autoExpand(textareaRef.current);
     }
-  }, [inputValue,fileInputValue]); 
+  }, [inputValue,fileInputValue,messages]); 
 
   const updateProgress = (value: number) => {
     setProgress(value);

@@ -1,4 +1,4 @@
-import { useEffect, useState,useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Banner from './components/Banner';
 import Footer from './components/Footer';
 import Message from './components/Message';
@@ -22,10 +22,12 @@ const App = () => {
   const chatboxRef = useRef<HTMLDivElement | null>(null); 
 
   useEffect(() => {
+    // Access the messages from the global window object
+    const initialMessages = (window as unknown as { messages: MessageData[] }).messages || [];
+    setMessages(initialMessages);
+
     const token = document.getElementById('root')?.getAttribute('accessToken');
-    // const token =  "eyJhbGciOiJSUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2lkLnRyaW1ibGUuY29tIiwiZXhwIjoxNzQ0MTA0NDk4LCJuYmYiOjE3NDQxMDA4OTgsImlhdCI6MTc0NDEwMDg5OCwianRpIjoiNDcwMTNjNWM1MGIwNGMwYmEyNDRhNjEwYzk2MjkwYzkiLCJqd3RfdmVyIjoyLCJzdWIiOiJmZTE5MWIxNy0zNWZlLTQwZTItYmYyNy05NTkwYjE0ZjZmZjMiLCJpZGVudGl0eV90eXBlIjoidXNlciIsImFtciI6WyJmZWRlcmF0ZWQiLCJva3RhX3RyaW1ibGUiLCJtZmEiXSwiYXV0aF90aW1lIjoxNzQ0MDkzODQyLCJhenAiOiJkOWQyMWVkMC0xNGU3LTQ4ODctYmE0Yi1kMTJhYzJmMmY0NjYiLCJhY2NvdW50X2lkIjoidHJpbWJsZS1wbGFjZWhvbGRlci1vZi1lbXBsb3llZXMiLCJhdWQiOlsiZDlkMjFlZDAtMTRlNy00ODg3LWJhNGItZDEyYWMyZjJmNDY2Il0sInNjb3BlIjoiVERBQVMiLCJkYXRhX3JlZ2lvbiI6InVzIn0.SiKx8IbQUIpvI6TDDh9wp6Z4V1fUclGIUK24PHAY6fMZZuZ_dzSRg1uAYESrl5jeXOLzKUx9tJHi4XRylu1m9YS6FK254676_qADipY_PX6yTFuo3bScDVtZk-ckserxo2CPgRCVA19_xzOQsnrzxuCdJzTNLTeJ4OLKalcVBdtDlTo24TRNJr24Od1EGv27FgPXTwfWv1PzD1ijJBW4t8-ikQKpllD2gyWAoUhZfY13TL2SxoPsRn33KZKVAzLm5Mkeg85kQd27m3lrJVkAJ7vAcMkEBnLh2uf5ihh6ERCDZhMyVTlhPnEcX8ePJ7ukk2p8h-zsZDD39XFnLK1ilA";
     setAccessToken(token);
-    console.log("token is", token);
   }, []);
 
   useEffect(() => {
@@ -42,6 +44,13 @@ const App = () => {
       fetchUserInfo(accessToken);
     }
   }, [accessToken]);
+
+  useEffect(() => {
+    (window as unknown as { messages: MessageData[] }).messages = messages;
+    if (window.vscode) {
+      window.vscode.postMessage({ command: 'updateMessages', message: JSON.stringify(messages) });
+    }
+  }, [messages]);
 
   const fetchUserInfo = async (token: string) => {
     try {
@@ -74,7 +83,6 @@ const App = () => {
     }
   };
   
-
   return (
     <div id='main' className="main__container">
       {messages.length === 0 ? (
@@ -86,7 +94,7 @@ const App = () => {
           ))}
         </div>
       )}
-      <Footer onSendMessage={handleSendMessage} access_token={accessToken || ""} />
+      <Footer onSendMessage={handleSendMessage} access_token={accessToken || ""} messages={messages} />
     </div>
   );
 };
