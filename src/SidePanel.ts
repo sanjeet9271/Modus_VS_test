@@ -54,7 +54,7 @@ export class SidePanelProvider implements WebviewViewProvider {
     const stylesUri = getUri(webview, extensionUri, ["modus", "build", "assets", "index.css"]);
     const scriptUri = getUri(webview, extensionUri, ["modus", "build", "assets", "index.js"]);
     const reactUri = getUri(webview, extensionUri, ["modus", "build", "react_1.svg"]);
-    const moduscoderUri = getUri(webview, extensionUri, ["modus", "build", "modus_coder_logo.png"]);
+    const moduscoderUri = getUri(webview, extensionUri, ["modus", "build", "VS_mdous_coder_logo.svg"]);
     const angularUri = getUri(webview, extensionUri, ["modus", "build","assets","Angular_Logo.png"]);
     const codiconsUri = getUri(webview, extensionUri, ['node_modules', '@vscode', 'codicons', 'dist', 'codicon.css']);
 

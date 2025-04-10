@@ -88,6 +88,19 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
       });
   };
 
+  const getInitialsFromEmail = (email: string): string => {
+    if (!email) return '';
+    const namePart = email.split('@')[0];
+    const nameParts = namePart.split('_');
+    const firstNameInitial = nameParts[0].charAt(0).toUpperCase();
+    const secondNameInitial = nameParts[1] ? nameParts[1].charAt(0).toUpperCase() : '';
+    return secondNameInitial ? `${firstNameInitial}${secondNameInitial}` : firstNameInitial;
+  };
+
+  const isDefaultProfile = userinfo?.picture.includes('default_profile.png');
+  const initials = userinfo ? getInitialsFromEmail(userinfo.email) : 'U';
+
+
   return (
     <div
       ref={containerRef}
@@ -97,17 +110,19 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
       onClick={() => setIsFocused(true)} 
     >
       <div className="message__avatar">
-      <img
-          src={
-            isBot
-              ? moduslogourl || 'https://avatars.githubusercontent.com/u/194470184?v=4&size=64'
-              : userinfo?.picture || 'https://avatars.githubusercontent.com/u/194460184?v=4&size=64'
-          }
-          alt={isBot ? 'Bot Avatar' : 'User Avatar'}
-        />
-        <div className="username">
-          {isBot ? 'Modus Coder' : userinfo ? userinfo.email : 'Unknown User'}
-        </div>
+        {isBot ? (
+          <img
+            src={moduslogourl || 'https://avatars.githubusercontent.com/u/194470184?v=4&size=64'}
+            alt="Bot Avatar"
+          />
+        ) : isDefaultProfile ? (
+          <span className="initials-avatar">{initials}</span>
+        ) : (
+          <img
+            src={userinfo?.picture || 'https://avatars.githubusercontent.com/u/194460184?v=4&size=64'}
+            alt="User Avatar"
+          />
+        )}
       </div>
       <div className="message__body">
         {isCode ? (

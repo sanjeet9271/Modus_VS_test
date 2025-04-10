@@ -94,3 +94,17 @@
   font-weight: bold;
   color: var(--vscode-editor-foreground); 
 }
+
+.initials-avatar {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background-color: var(--vscode-editor-background); /* Use editor background color */
+  color: var(--vscode-editor-foreground); /* Use editor foreground color */
+  font-size: 12px; /* Adjust font size to fit within 30px */
+  font-weight: bold;
+  text-align: center;
+  line-height: 30px; /* Match line-height to height for vertical centering */
+  border-radius: 50%;
+  border: 1px solid var(--vscode-editorLineNumber-foreground); /* Optional border for better visibility */
+}

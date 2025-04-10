@@ -23,7 +23,7 @@
         {
           "id": "moduscoder-sidebar-container",
           "title": "Modus Coder",
-          "icon": "./src/media/vslogo.png"
+          "icon": "./src/media/VS_mdous_coder_logo.png"
         }
       ]
     },
@@ -32,8 +32,8 @@
         {
           "type": "webview",
           "id": "moduscoder-sidebar",
-          "name": "Modus",
-          "icon": "./src/media/vslogo.png"
+          "name": "",
+          "icon": "./src/media/VS_mdous_coder_logo.png"
         }
       ]
     }

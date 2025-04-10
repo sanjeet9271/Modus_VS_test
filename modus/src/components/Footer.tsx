@@ -71,7 +71,14 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token }) => {
 
   const updateProgress = (value: number) => {
     setProgress(value);
+  
+    if (value === 100) {
+      setTimeout(() => {
+        setProgress(0);
+      }, 2000); 
+    }
   };
+  
 
   const handleSendClick = async () => {
     if (inputValue.trim()) {
