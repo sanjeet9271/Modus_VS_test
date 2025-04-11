@@ -99,6 +99,7 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
 
   const isDefaultProfile = userinfo?.picture.includes('default_profile.png');
   const initials = userinfo ? getInitialsFromEmail(userinfo.email) : 'U';
+  const username = userinfo?.email.split('@')[0] || 'User';
 
 
   return (
@@ -123,6 +124,7 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
             alt="User Avatar"
           />
         )}
+        <div className="username">{isBot? "Modus Coder" : username}</div>
       </div>
       <div className="message__body">
         {isCode ? (
@@ -138,6 +140,9 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
                       alt="Copy"
                       className="copy-icon"
                       onClick={() => handleCopy(index)}
+                      data-tooltip-id='tooltip'
+                      data-tooltip-content="Copy"
+                      data-tooltip-place="top"
                     />
                   </div>
                   <pre>

@@ -24,8 +24,8 @@ export function startServer(context: vscode.ExtensionContext, sidePanelProvider:
 
       if (authCode) {
         try {
-          const accessToken = await getAccessToken(authCode, context);
-
+          const { accessToken, refresh_token } = await getAccessToken(authCode, context);
+          context.globalState.update('refreshToken', refresh_token);
           context.globalState.update('accessToken', accessToken);
           sidePanelProvider.updateWebviewContent();
           

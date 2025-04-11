@@ -12,6 +12,7 @@ export function activate(context: vscode.ExtensionContext) {
   extensionContext = context;
   extensionContext.globalState.update('accessToken','NULL');
   extensionContext.globalState.update('messages', []);
+  extensionContext.globalState.update('refreshToken','NULL');
 
   if (sidePanelProvider) {
     sidePanelProvider.updateWebviewContent();

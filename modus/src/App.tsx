@@ -22,7 +22,6 @@ const App = () => {
   const chatboxRef = useRef<HTMLDivElement | null>(null); 
 
   useEffect(() => {
-    // Access the messages from the global window object
     const initialMessages = (window as unknown as { messages: MessageData[] }).messages || [];
     setMessages(initialMessages);
 
@@ -94,7 +93,7 @@ const App = () => {
           ))}
         </div>
       )}
-      <Footer onSendMessage={handleSendMessage} access_token={accessToken || ""} messages={messages} />
+      <Footer onSendMessage={handleSendMessage} messages={messages} />
     </div>
   );
 };

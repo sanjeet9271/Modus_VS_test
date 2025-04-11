@@ -1,42 +1,41 @@
-import React, { useLayoutEffect, useState, useRef} from 'react';
+import React, { useLayoutEffect, useState, useRef } from 'react';
 import "./Footer.css";
 import { AgentService } from './AgentService';
 import react_1 from "../assets/react_1.svg";
 import angularLogo from "../assets/Angular_Logo.png";
 import { v4 as uuidv4 } from 'uuid';
+import "react-tooltip/dist/react-tooltip.css";
+import { Tooltip } from "react-tooltip";
 
 interface FooterProps {
-  onSendMessage: (message: { text: string; isBot: boolean ;agent: string },action: 'add' | 'empty') => void;
-  access_token:string;
+  onSendMessage: (message: { text: string; isBot: boolean; agent: string }, action: 'add' | 'empty') => void;
   messages: { text: string; isBot: boolean; agent: string }[];
 }
 
-const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token,messages}) => {
+const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
   const [inputValue, setInputValue] = useState('');
   const [isOverflowing, setIsOverflowing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState('React');
-
-  const agentService = new AgentService();
-  agentService.accessToken = access_token;
-  const agentName = selectedModel =='React'?'best-modus-react':'angularp2c';
-  const react_sessionId = uuidv4();
-  const angular_sessionId = uuidv4();
-  const sessionId = selectedModel =='React'? react_sessionId : angular_sessionId;
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [fileInputValue, setFileInputValue] = useState<File | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const reactUri = document.getElementById('root')?.getAttribute('data-image-uri') || react_1 || undefined;
-  const angularUri = document.getElementById('root')?.getAttribute('angularLogo') || angularLogo ||undefined;
+  const agentService = new AgentService();
+  const agentName = selectedModel === 'React' ? 'best-modus-react' : 'angularp2c';
+  const react_sessionId = uuidv4();
+  const angular_sessionId = uuidv4();
+  const sessionId = selectedModel === 'React' ? react_sessionId : angular_sessionId;
 
+  const reactUri = document.getElementById('root')?.getAttribute('data-image-uri') || react_1 || undefined;
+  const angularUri = document.getElementById('root')?.getAttribute('angularLogo') || angularLogo || undefined;
 
   useLayoutEffect(() => {
     const autoExpand = (field: HTMLTextAreaElement) => {
-      const maxHeight = 200; 
-      field.style.height = 'inherit'; 
+      const maxHeight = 200;
+      field.style.height = 'inherit';
       const computed = window.getComputedStyle(field);
       const height =
         parseInt(computed.getPropertyValue('border-top-width'), 10) +
@@ -55,12 +54,12 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token,messages}) =
       const chatbox = document.querySelector('.message__chatbox') as HTMLElement;
 
       if (wrapper && container) {
-        wrapper.style.height = `${container.offsetHeight + 20}px`; 
+        wrapper.style.height = `${container.offsetHeight + 20}px`;
       }
 
       if (container && chatbox) {
-        const footerHeight = container.offsetHeight + 20; 
-        chatbox.style.height = `calc(100vh - ${footerHeight}px)`; 
+        const footerHeight = container.offsetHeight + 20;
+        chatbox.style.height = `calc(100vh - ${footerHeight}px)`;
         chatbox.style.overflowY = 'auto';
       }
     };
@@ -68,93 +67,93 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token,messages}) =
     if (textareaRef.current) {
       autoExpand(textareaRef.current);
     }
-  }, [inputValue,fileInputValue,messages]); 
+  }, [inputValue, fileInputValue, messages]);
 
   const updateProgress = (value: number) => {
     setProgress(value);
-  
+
     if (value === 100) {
       setTimeout(() => {
         setProgress(0);
-      }, 2000); 
+      }, 2000);
     }
   };
-  
+
+  const checkTokenAndExecute = async (callback: () => Promise<void>) => {
+    if (window.checkTokenValidity) {
+      const isValid = await window.checkTokenValidity();
+      if(isValid){
+        await callback();
+      }
+      else{
+        console.error('Token is invalid or expired. Please log in again.');
+      }
+    }
+  };
 
   const handleSendClick = async () => {
-    if (inputValue.trim()) {
-      onSendMessage({ text: inputValue, isBot: false, agent: selectedModel },'add');
-      setInputValue('');
-      updateProgress(10); 
-  
-      if (textareaRef.current) {
-        textareaRef.current.style.height = 'inherit';
-        setIsOverflowing(false);
-      }
-  
-      try {
-        updateProgress(30);
-        const botResponse = await agentService.getGeneralAssistantResponse(
-          agentName,
-          inputValue,
-          sessionId
-        );
-  
-        if (botResponse) {
-          updateProgress(80);
-          onSendMessage({ text: botResponse, isBot: true, agent: selectedModel },'add');
-          updateProgress(100); 
-        } else {
-          console.error('Bot response is undefined');
-          updateProgress(0); 
+    await checkTokenAndExecute(async () => {
+      if (inputValue.trim()) {
+        onSendMessage({ text: inputValue, isBot: false, agent: selectedModel }, 'add');
+        setInputValue('');
+        updateProgress(10);
+
+        if (textareaRef.current) {
+          textareaRef.current.style.height = 'inherit';
+          setIsOverflowing(false);
         }
-      } catch (error) {
-        console.error('Error fetching bot response:', error);
-        updateProgress(0); 
+
+        try {
+          updateProgress(30);
+          agentService.accessToken = window.accessToken; // Use updated accessToken
+          const botResponse = await agentService.getGeneralAssistantResponse(agentName, inputValue, sessionId);
+
+          if (botResponse) {
+            updateProgress(80);
+            onSendMessage({ text: botResponse, isBot: true, agent: selectedModel }, 'add');
+            updateProgress(100);
+          } else {
+            console.error('Bot response is undefined');
+            updateProgress(0);
+          }
+        } catch (error) {
+          console.error('Error fetching bot response:', error);
+          updateProgress(0);
+        }
       }
-    }
-  };
-  
-
-  const handleAtClick = () => {
-    if(access_token !== 'NULL') {
-      onSendMessage({ text: "empty", isBot: false, agent: selectedModel }, 'empty');
-    }
-  };
-
-  const handleAttachmentClick = () => {
-    console.log("Attachment button clicked");
-    if (fileInputRef.current && access_token !== 'NULL') {
-      fileInputRef.current.click();
-    }
+    });
   };
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setFileInputValue(file);
-      onSendMessage({ text: "Image Succesfully Uploaded !", isBot: false, agent: selectedModel },'add');
-      updateProgress(8);
-      const reader = new FileReader();
-      reader.onload= async () => {
-        const base64String = reader.result?.toString() // Get the base64 part
-        if (base64String) {
-          try {
-            const modusCode = await agentService.processImageToModus(base64String, selectedModel,updateProgress);
-            if (modusCode) {
-              updateProgress(100);
-              onSendMessage({ text: modusCode, isBot: true, agent: selectedModel },'add');
-            } else {
+      await checkTokenAndExecute(async () => {
+        setFileInputValue(file);
+        onSendMessage({ text: 'Image Successfully Uploaded!', isBot: false, agent: selectedModel }, 'add');
+        updateProgress(8);
+
+        const reader = new FileReader();
+        reader.onload = async () => {
+          const base64String = reader.result?.toString();
+          if (base64String) {
+            try {
+              agentService.accessToken = window.accessToken; // Use updated accessToken
+              const modusCode = await agentService.processImageToModus(base64String, selectedModel, updateProgress);
+              if (modusCode) {
+                updateProgress(100);
+                onSendMessage({ text: modusCode, isBot: true, agent: selectedModel }, 'add');
+              } else {
+                updateProgress(0);
+                console.error('Failed to process image to MODUS code.');
+              }
+            } catch (error) {
               updateProgress(0);
-              console.error("Failed to process image to MODUS code.");
+              console.error('Error processing image:', error);
             }
-          } catch (error) {
-            updateProgress(0);
-            console.error("Error processing image:", error);
           }
-        }
-      };
-      reader.readAsDataURL(file);
+        };
+        reader.readAsDataURL(file);
+      });
     }
   };
 
@@ -188,23 +187,35 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token,messages}) =
           <textarea
             id="autoExpand"
             ref={textareaRef}
-            placeholder={access_token === "NULL" || !access_token ? "Please login to continue..." : "Enter your query here..."}
+            placeholder={!window.accessToken || window.accessToken==='NULL'? 'Please login to continue...' : 'Enter your query here...'}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onFocus={() => {
               setIsFocused(true);
-              updateProgress(0); 
+              updateProgress(0);
             }}
             onBlur={() => setIsFocused(false)}
-            disabled={access_token === "NULL" || !access_token} 
+            disabled={!window.accessToken || window.accessToken==='NULL'}
           ></textarea>
           <div className="toolbar">
             <div className="input-actions">
-              <button onClick={handleAtClick} className={access_token === 'NULL' || !access_token ? 'disabled-icon' : ''}>
-                <i className='codicon codicon-refresh'></i>
+              <button
+                onClick={() => onSendMessage({ text: 'empty', isBot: false, agent: selectedModel }, 'empty')}
+                className={!window.accessToken || window.accessToken==='NULL'? 'disabled-icon' : ''}
+                data-tooltip-id="tooltip"
+                data-tooltip-content={'Clear Chat'}
+                data-tooltip-delay-show={300}
+              >
+                <i className="codicon codicon-refresh"></i>
               </button>
-              <button onClick={handleAttachmentClick} className={access_token === 'NULL' || !access_token ? 'disabled-icon' : ''}>
-                <i className='codicon codicon-link'></i>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className={!window.accessToken || window.accessToken==='NULL'? 'disabled-icon' : ''}
+                data-tooltip-id="tooltip"
+                data-tooltip-content={'Upload Image'}
+                data-tooltip-delay-show={300}
+              >
+                <i className="codicon codicon-link"></i>
               </button>
               <input
                 type="file"
@@ -215,35 +226,36 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage,access_token,messages}) =
               />
             </div>
             <div className="dropdown">
-              {access_token === 'NULL' || !access_token ? (
-                <div className="login-button">
+              {!window.accessToken || window.accessToken==='NULL' ? (
+                <div className="login-button" data-tooltip-id="tooltip" data-tooltip-content={'Login to continue'} data-tooltip-delay-show={300}>
                   <button id="authenticateButton">Login</button>
                 </div>
               ) : (
                 <>
-                <div className="model_selection" onClick={toggleDropdown}>
-                  <button>
-                    <span>{selectedModel}</span>
-                    <i className='codicon codicon-chevron-down'></i>
+                  <div className="model_selection" onClick={toggleDropdown}>
+                    <button data-tooltip-id="tooltip" data-tooltip-content={'Select Model'} data-tooltip-delay-show={300}>
+                      <span>{selectedModel}</span>
+                      <i className="codicon codicon-chevron-down"></i>
+                    </button>
+                    {isDropdownOpen && (
+                      <div className="dropdown-menu">
+                        <div onClick={() => selectModel('React')}>React</div>
+                        <div onClick={() => selectModel('Angular')}>Angular</div>
+                      </div>
+                    )}
+                  </div>
+                  <button onClick={handleSendClick} data-tooltip-id="tooltip" data-tooltip-content={'Send'} data-tooltip-delay-show={300}>
+                    <i className="codicon codicon-send"></i>
                   </button>
-                  {isDropdownOpen && (
-                    <div className="dropdown-menu">
-                      <div onClick={() => selectModel('React')}>React</div>
-                      <div onClick={() => selectModel('Angular')}>Angular</div>
-                    </div>
-                  )}
-                </div>
-                <button onClick={handleSendClick}>
-                  <i className='codicon codicon-send'></i>
-                </button>
-              </>
+                  <Tooltip id="tooltip" />
+                </>
               )}
             </div>
           </div>
         </div>
       </div>
     </div>
-  );    
+  );
 };
 
 export default Footer;

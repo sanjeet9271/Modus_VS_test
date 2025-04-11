@@ -2,6 +2,7 @@ import { Disposable, Webview, WebviewView, WebviewViewProvider, window, Uri, Web
 import { getUri } from "./utilities/getUri";
 import { getNonce } from "./utilities/getNonce";
 import * as vscode from 'vscode';
+import { checkTokenValidity } from './auth';
 
 export class SidePanelProvider implements WebviewViewProvider {
   public static readonly viewType = 'showHelloWorld';
@@ -47,17 +48,29 @@ export class SidePanelProvider implements WebviewViewProvider {
 
       this.context.globalState.update('messages', JSON.parse(message.message));
     }
+    else if (message.command === 'checkTokenValidity') {
+      checkTokenValidity(this.context).then(isValid => {
+        const updatedAccessToken = this.context.globalState.get<string>('accessToken');
+        this._view?.webview.postMessage({
+          command: 'checkTokenValidityResponse',
+          accessToken: updatedAccessToken,
+          isValid,
+        });
+      });
+    }
   }
 
   public updateWebviewContent() {
     if (this._view) {
       const accessToken = this.context.globalState.get<string>('accessToken');
+      const refreshToken = this.context.globalState.get<string>('refreshToken');
       const messages = this.context.globalState.get<string[]>('messages') || [];
-      this._view.webview.html = this._getWebviewContent(this._view.webview, this.extensionUri, accessToken, this.currentFile, messages);
+      console.log("Access Token in updateWebviewContent:", accessToken);
+      this._view.webview.html = this._getWebviewContent(this._view.webview, this.extensionUri, accessToken, this.currentFile, messages,refreshToken);
     }
   }
 
-  private _getWebviewContent(webview: Webview, extensionUri: Uri, accessToken: string | undefined, currentFile: string, messages: string[]) {
+  private _getWebviewContent(webview: Webview, extensionUri: Uri, accessToken: string | undefined, currentFile: string, messages: string[],refreshToken: string | undefined) {
     const nonce = getNonce();
     const stylesUri = getUri(webview, extensionUri, ["modus", "build", "assets", "index.css"]);
     const scriptUri = getUri(webview, extensionUri, ["modus", "build", "assets", "index.js"]);
@@ -89,7 +102,7 @@ export class SidePanelProvider implements WebviewViewProvider {
         <title>Modus Coder</title>
       </head>
       <body> 
-        <div id="root" class="monaco-workbench" accessToken="${accessToken || ''}" data-image-uri="${reactUri}" moduslogo="${moduscoderUri}" angularLogo="${angularUri}">
+        <div id="root" class="monaco-workbench" accessToken="${accessToken || ''}" refreshToken="${refreshToken || ''}" data-image-uri="${reactUri}" moduslogo="${moduscoderUri}" angularLogo="${angularUri}">
         </div>
         <script type="module" src="${scriptUri}" nonce="${nonce}"></script>
         <script nonce="${nonce}">
@@ -98,6 +111,26 @@ export class SidePanelProvider implements WebviewViewProvider {
     
           window.isAuthenticated = isAuthenticated;
           window.messages = messages;
+          window.accessToken = '${accessToken || ''}';
+
+          window.checkTokenValidity = async () => {
+              return new Promise((resolve, reject) => {
+                const tokenValidityMessageId = 'checkTokenValidity'; // Unique name
+                window.vscode.postMessage({ command: tokenValidityMessageId });
+
+                window.addEventListener('message', function handleMessage(event) {
+                  const message = event.data;
+                  if (message.command === "checkTokenValidityResponse") {
+                    if (message.accessToken) {
+                      window.accessToken = message.accessToken; 
+                      console.log('Updated accessToken');
+                    }
+                    resolve(message.isValid);
+                    window.removeEventListener('message', handleMessage); // Clean up listener
+                  }
+                });
+              });
+            };
 
           if (!window.vscode) {
             window.vscode = acquireVsCodeApi();
@@ -107,6 +140,7 @@ export class SidePanelProvider implements WebviewViewProvider {
             console.log(isAuthenticated);
             if (!isAuthenticated) {
               const authenticateButton = document.getElementById('authenticateButton');
+              console.log("the auth button is",authenticateButton);
               if (authenticateButton) {
                 console.log(authenticateButton);
     

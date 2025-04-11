@@ -3,6 +3,8 @@ interface Window {
       postMessage: (message: { command: string; message: string }) => void;
     };
     messages: MessageData[];
+    accessToken: string;
+    checkTokenValidity?: () => Promise<boolean>;
   }
   
 interface MessageData {
