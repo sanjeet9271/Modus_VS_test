@@ -59,6 +59,12 @@
   padding-bottom: 5px;
 }
 
+.code__header button{
+  outline: none !important;
+  border: none !important;
+  background: none !important;
+}
+
 .copy-icon {
   width: 16px; 
   height: 16px;

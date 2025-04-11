@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/vs2015.css'; 
 import './Message.css';
-import copy from '../assets/copy.svg'
 
 interface UserInfo {
   email: string;
@@ -135,15 +134,15 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
                 <div key={index} className='code__container'>
                   <div className="code__header">
                     <div className="language-label">{language.toUpperCase()}</div>
-                    <img
-                      src={copy}
-                      alt="Copy"
-                      className="copy-icon"
+                    <button
                       onClick={() => handleCopy(index)}
-                      data-tooltip-id='tooltip'
+                      className="copy-icon"
+                      data-tooltip-id="tooltip"
                       data-tooltip-content="Copy"
                       data-tooltip-place="top"
-                    />
+                    >
+                      <i className="codicon codicon-copy"></i>
+                    </button>
                   </div>
                   <pre>
                     <code

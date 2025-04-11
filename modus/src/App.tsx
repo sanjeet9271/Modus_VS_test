@@ -25,7 +25,7 @@ const App = () => {
     const initialMessages = (window as unknown as { messages: MessageData[] }).messages || [];
     setMessages(initialMessages);
 
-    const token = document.getElementById('root')?.getAttribute('accessToken');
+    const token = window.accessToken || 'NULL';
     setAccessToken(token);
   }, []);
 
