@@ -25,7 +25,7 @@ interface CustomWindow extends Window {
 
 declare const window: CustomWindow;
 
-const USER_INFO_URL = process.env.REACT_APP_USER_INFO_URL || 'https://id.trimble.com/oauth/userinfo';
+const USER_INFO_URL = 'https://id.trimble.com/oauth/userinfo';
 
 const App = () => {
   const [messages, setMessages] = useState<MessageData[]>([]);

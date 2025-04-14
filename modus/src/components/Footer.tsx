@@ -36,6 +36,8 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
   const react_sessionId = useMemo(() => uuidv4(), []);
   const angular_sessionId = useMemo(() => uuidv4(), []);
   const sessionId = selectedModel === MODELS.REACT ? react_sessionId : angular_sessionId;
+  const isAccessTokenInvalid = !window.accessToken || window.accessToken === 'NULL';
+  // const isAccessTokenInvalid = false;
 
   const reactUri = document.getElementById('root')?.getAttribute('data-image-uri') || react_1 || undefined;
   const angularUri = document.getElementById('root')?.getAttribute('angularLogo') || angularLogo || undefined;
@@ -201,21 +203,21 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
           <textarea
             id="autoExpand"
             ref={textareaRef}
-            placeholder={!window.accessToken || window.accessToken === 'NULL' ? 'Please login to continue...' : 'Enter your query here...'}
+            placeholder={isAccessTokenInvalid ? 'Please login to continue...' : 'Enter your query here...'}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onFocus={() => {
               setIsFocused(true);
             }}
             onBlur={() => setIsFocused(false)}
-            disabled={!window.accessToken || window.accessToken === 'NULL'}
+            disabled={isAccessTokenInvalid}
             aria-label="Chat input"
           ></textarea>
           <div className="toolbar">
             <div className="input-actions">
               <button
                 onClick={() => onSendMessage({ text: 'empty', isBot: false, agent: selectedModel }, 'empty')}
-                className={!window.accessToken || window.accessToken === 'NULL' ? 'disabled-icon' : ''}
+                className={isAccessTokenInvalid ? 'disabled-icon' : ''}
                 data-tooltip-id="tooltip"
                 data-tooltip-content={'Clear'}
                 data-tooltip-delay-show={300}
@@ -225,7 +227,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
               </button>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className={!window.accessToken || window.accessToken === 'NULL' ? 'disabled-icon' : ''}
+                className={isAccessTokenInvalid ? 'disabled-icon' : ''}
                 data-tooltip-id="tooltip"
                 data-tooltip-content={'Upload Image'}
                 data-tooltip-delay-show={300}
@@ -241,7 +243,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
               />
             </div>
             <div className="dropdown">
-              {!window.accessToken || window.accessToken === 'NULL' ? (
+              {isAccessTokenInvalid ? (
                 <div className="login-button" data-tooltip-id="tooltip" data-tooltip-content={'Login to continue'} data-tooltip-delay-show={300}>
                   <button id="authenticateButton">Login</button>
                 </div>
