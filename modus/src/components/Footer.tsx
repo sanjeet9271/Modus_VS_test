@@ -105,7 +105,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
 
         try {
           updateProgress(30);
-          agentService.accessToken = window.accessToken; // Use updated accessToken
+          agentService.accessToken = window.accessToken; 
           const botResponse = await agentService.getGeneralAssistantResponse(agentName, inputValue, sessionId);
 
           if (botResponse) {

@@ -1,13 +1,15 @@
 import * as randomstring from 'randomstring';
 import { SHA256, enc } from 'crypto-js';
+import * as vscode from 'vscode';
 
 const CODE_VERIFIER_CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,-_~";
 
-export function generateCodeVerifier(): string {
+export function generateCodeVerifier(context: vscode.ExtensionContext): string {
   let codeVerifier = randomstring.generate({
     length: getLength(),
     charset: CODE_VERIFIER_CHARSET,
   });
+  context.globalState.update('codeVerifier', codeVerifier);
   return codeVerifier;
 }
 

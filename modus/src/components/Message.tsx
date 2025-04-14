@@ -96,7 +96,6 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
     return secondNameInitial ? `${firstNameInitial}${secondNameInitial}` : firstNameInitial;
   };
 
-  const isDefaultProfile = userinfo?.picture.includes('default_profile.png');
   const initials = userinfo ? getInitialsFromEmail(userinfo.email) : 'U';
   const username = userinfo?.email.split('@')[0] || 'User';
 
@@ -115,13 +114,8 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
             src={moduslogourl || 'https://avatars.githubusercontent.com/u/194470184?v=4&size=64'}
             alt="Bot Avatar"
           />
-        ) : isDefaultProfile ? (
+        ) :(
           <span className="initials-avatar">{initials}</span>
-        ) : (
-          <img
-            src={userinfo?.picture || 'https://avatars.githubusercontent.com/u/194460184?v=4&size=64'}
-            alt="User Avatar"
-          />
         )}
         <div className="username">{isBot? "Modus Coder" : username}</div>
       </div>

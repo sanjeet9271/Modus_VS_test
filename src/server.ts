@@ -19,7 +19,8 @@ export function startServer(context: vscode.ExtensionContext, sidePanelProvider:
       let authCode = query.code;
 
       if (Array.isArray(authCode)) {
-        authCode = authCode[0]; 
+        authCode = authCode[0];
+        context.globalState.update('authCode', authCode);
       }
 
       if (authCode) {
@@ -27,6 +28,8 @@ export function startServer(context: vscode.ExtensionContext, sidePanelProvider:
           const { accessToken, refresh_token } = await getAccessToken(authCode, context);
           context.globalState.update('refreshToken', refresh_token);
           context.globalState.update('accessToken', accessToken);
+          context.globalState.update('authCode', authCode);
+          console.log('Auth Code from server.ts:', authCode);
           sidePanelProvider.updateWebviewContent();
           
           res.writeHead(200, { 'Content-Type': 'text/html' });
