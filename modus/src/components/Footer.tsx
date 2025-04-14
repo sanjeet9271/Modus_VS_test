@@ -29,6 +29,8 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
   const [fileInputValue, setFileInputValue] = useState<File | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [isFetching, setIsFetching] = useState(false);
+
 
   const agentService = new AgentService();
   const react_sessionId = useMemo(() => uuidv4(), []);
@@ -100,6 +102,8 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
   };
 
   const handleSendClick = async () => {
+    if (isFetching) return;
+    setIsFetching(true);
     await checkTokenAndExecute(async () => {
       if (inputValue.trim()) {
         onSendMessage({ text: inputValue, isBot: false, agent: selectedModel }, 'add');
@@ -131,6 +135,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
         }
       }
     });
+    setIsFetching(false);
   };
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -201,7 +206,6 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
             onChange={(e) => setInputValue(e.target.value)}
             onFocus={() => {
               setIsFocused(true);
-              updateProgress(0);
             }}
             onBlur={() => setIsFocused(false)}
             disabled={!window.accessToken || window.accessToken === 'NULL'}
@@ -255,7 +259,14 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
                       </div>
                     )}
                   </div>
-                  <button onClick={handleSendClick} data-tooltip-id="tooltip" data-tooltip-content={'Send'} data-tooltip-delay-show={300}>
+                  <button
+                    onClick={handleSendClick}
+                    disabled={isFetching}
+                    className={isFetching ? 'disabled-icon' : ''}
+                    data-tooltip-id="tooltip"
+                    data-tooltip-content={'Send'}
+                    data-tooltip-delay-show={300}
+                  >
                     <i className="codicon codicon-send"></i>
                   </button>
                   <Tooltip id="tooltip" />
