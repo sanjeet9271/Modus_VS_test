@@ -15,14 +15,26 @@ interface UserInfo {
   picture: string;
 }
 
+interface CustomWindow extends Window {
+  messages: MessageData[];
+  vscode: {
+    postMessage: (message: { command: string; message: string }) => void;
+  };
+  accessToken: string;
+}
+
+declare const window: CustomWindow;
+
+const USER_INFO_URL = process.env.REACT_APP_USER_INFO_URL || 'https://id.trimble.com/oauth/userinfo';
+
 const App = () => {
   const [messages, setMessages] = useState<MessageData[]>([]);
   const [accessToken, setAccessToken] = useState<string | null | undefined>(null);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const chatboxRef = useRef<HTMLDivElement | null>(null); 
+  const chatboxRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const initialMessages = (window as unknown as { messages: MessageData[] }).messages || [];
+    const initialMessages = window.messages || [];
     setMessages(initialMessages);
 
     const token = window.accessToken || 'NULL';
@@ -33,19 +45,19 @@ const App = () => {
     if (chatboxRef.current) {
       chatboxRef.current.scrollTo({
         top: chatboxRef.current.scrollHeight,
-        behavior: 'smooth', 
+        behavior: 'smooth',
       });
     }
   }, [messages]);
 
   useEffect(() => {
-    if (accessToken != 'NULL' && accessToken) {
+    if (accessToken && accessToken !== 'NULL') {
       fetchUserInfo(accessToken);
     }
   }, [accessToken]);
 
   useEffect(() => {
-    (window as unknown as { messages: MessageData[] }).messages = messages;
+    window.messages = messages;
     if (window.vscode) {
       window.vscode.postMessage({ command: 'updateMessages', message: JSON.stringify(messages) });
     }
@@ -53,12 +65,12 @@ const App = () => {
 
   const fetchUserInfo = async (token: string) => {
     try {
-      const response = await fetch('https://id.trimble.com/oauth/userinfo', {
+      const response = await fetch(USER_INFO_URL, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json'
-        }
+          'Accept': 'application/json',
+        },
       });
 
       if (!response.ok) {
@@ -66,9 +78,8 @@ const App = () => {
       }
 
       const data = await response.json();
-      const emailName = data.email.split('@')[0]; 
+      const emailName = data.email.split('@')[0];
       setUserInfo({ email: emailName, picture: data.picture });
-      console.log("User Info:", data);
     } catch (error) {
       console.error("Error fetching user info:", error);
     }
@@ -81,15 +92,15 @@ const App = () => {
       setMessages([]);
     }
   };
-  
+
   return (
-    <div id='main' className="main__container">
+    <div id="main" className="main__container" role="main">
       {messages.length === 0 ? (
         <Banner />
       ) : (
         <div className="message__chatbox" ref={chatboxRef}>
           {messages.map((msg, index) => (
-            <Message key={index} message={msg.text} isBot={msg.isBot} agent={msg.agent} userinfo={userInfo}/>
+            <Message key={index} message={msg.text} isBot={msg.isBot} agent={msg.agent} userinfo={userInfo} />
           ))}
         </div>
       )}

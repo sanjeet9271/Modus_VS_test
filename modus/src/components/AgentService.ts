@@ -93,9 +93,6 @@ export class AgentService {
 
   public base64ToBlob(base64: string, contentType: string): Blob {
     try {
-      // Log the base64 string for debugging
-      // console.log("Base64 string length:", base64.length);
-      // console.log("Base64 string preview:", base64.substring(0, 30) + "...");
   
       // Check if the base64 string needs padding
       const paddingNeeded = base64.length % 4;

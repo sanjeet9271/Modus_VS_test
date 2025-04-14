@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import hljs from 'highlight.js';
-import 'highlight.js/styles/vs2015.css'; 
+import 'highlight.js/styles/vs2015.css';
 import './Message.css';
 
 interface UserInfo {
@@ -15,9 +15,10 @@ interface MessageProps {
   userinfo: UserInfo | null;
 }
 
+const DEFAULT_BOT_AVATAR = 'https://avatars.githubusercontent.com/u/194470184?v=4&size=64';
+
 const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) => {
   const codeRefs = useRef<(HTMLElement | null)[]>([]);
-  const [buttonText, setButtonText] = useState<string[]>(['Copy', 'Copy']);
   const [isFocused, setIsFocused] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -40,21 +41,23 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
     });
   };
 
-  const codeContents = isBot
-    ? extractCodeBlocks(message, agent === 'React' ? ['tsx'] : ['html', 'typescript'])
-    : [];
+  // Use useMemo to memoize codeContents
+  const codeContents = useMemo(() => {
+    if (isBot) {
+      return extractCodeBlocks(message, agent === 'React' ? ['tsx'] : ['html', 'typescript']);
+    }
+    return [];
+  }, [message, isBot, agent]);
 
-  const isCode = codeContents.some((content) => content !== '');
+  const isCode = useMemo(() => codeContents.some((content) => content !== ''), [codeContents]);
 
   useEffect(() => {
-    if (isCode) {
-      codeRefs.current.forEach((ref) => {
-        if (ref) {
-          hljs.highlightElement(ref);
-        }
-      });
-    }
-  }, [isCode]);
+    codeRefs.current.forEach((ref) => {
+      if (ref) {
+        hljs.highlightElement(ref);
+      }
+    });
+  }, [codeContents]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -71,19 +74,21 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
 
   const handleCopy = (index: number) => {
     const contentToCopy = codeContents[index];
+    const buttonElement = document.querySelectorAll('.copy-icon')[index];
+
     navigator.clipboard
       .writeText(contentToCopy)
       .then(() => {
-        const newButtonText = [...buttonText];
-        newButtonText[index] = 'Copied';
-        setButtonText(newButtonText);
-        setTimeout(() => {
-          newButtonText[index] = 'Copy';
-          setButtonText(newButtonText);
-        }, 2000);
+        if (buttonElement) {
+          buttonElement.setAttribute('data-tooltip-content', 'Copied');
+          setTimeout(() => {
+            buttonElement.setAttribute('data-tooltip-content', 'Copy');
+          }, 2000); // Reset to "Copy" after 2 seconds
+        }
       })
       .catch((err) => {
         console.error('Failed to copy: ', err);
+        alert('Failed to copy to clipboard. Please try again.');
       });
   };
 
@@ -92,66 +97,57 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
     const namePart = email.split('@')[0];
     const nameParts = namePart.split('_');
     const firstNameInitial = nameParts[0].charAt(0).toUpperCase();
-    const secondNameInitial = nameParts[1] ? nameParts[1].charAt(0).toUpperCase() : '';
-    return secondNameInitial ? `${firstNameInitial}${secondNameInitial}` : firstNameInitial;
+    const secondNameInitial = nameParts[1]?.charAt(0).toUpperCase() || '';
+    return `${firstNameInitial}${secondNameInitial}`.trim();
   };
 
   const initials = userinfo ? getInitialsFromEmail(userinfo.email) : 'U';
   const username = userinfo?.email.split('@')[0] || 'User';
 
-
   return (
     <div
       ref={containerRef}
-      className={`message__container ${
-        isBot ? 'message__container--bot' : 'message__container--user'
-      } ${isFocused ? 'focused' : ''}`} 
-      onClick={() => setIsFocused(true)} 
+      className={`message__container ${isBot ? 'message__container--bot' : 'message__container--user'} ${isFocused ? 'focused' : ''}`}
+      onClick={() => setIsFocused(true)}
+      role="region"
+      aria-label={isBot ? 'Bot message' : 'User message'}
     >
       <div className="message__avatar">
         {isBot ? (
-          <img
-            src={moduslogourl || 'https://avatars.githubusercontent.com/u/194470184?v=4&size=64'}
-            alt="Bot Avatar"
-          />
-        ) :(
+          <img src={moduslogourl || DEFAULT_BOT_AVATAR} alt="Bot Avatar" />
+        ) : (
           <span className="initials-avatar">{initials}</span>
         )}
-        <div className="username">{isBot? "Modus Coder" : username}</div>
+        <div className="username">{isBot ? 'Modus Coder' : username}</div>
       </div>
       <div className="message__body">
         {isCode ? (
-          <div>
-            {codeContents.map((content, index) => {
-              const language = agent === 'React' ? 'tsx' : index === 0 ? 'html' : 'typescript';
-              return (
-                <div key={index} className='code__container'>
-                  <div className="code__header">
-                    <div className="language-label">{language.toUpperCase()}</div>
-                    <button
-                      onClick={() => handleCopy(index)}
-                      className="copy-icon"
-                      data-tooltip-id="tooltip"
-                      data-tooltip-content="Copy"
-                      data-tooltip-place="top"
-                    >
-                      <i className="codicon codicon-copy"></i>
-                    </button>
-                  </div>
-                  <pre>
-                    <code
-                      ref={(el) => {
-                        codeRefs.current[index] = el;
-                      }}
-                      className={language}
-                    >
-                      {content}
-                    </code>
-                  </pre>
-                </div>
-              );
-            })}
-          </div>
+          codeContents.map((content, index) => (
+            <div key={index} className="code__container">
+              <div className="code__header">
+                <div className="language-label">{(agent === 'React' ? 'tsx' : index === 0 ? 'html' : 'typescript').toUpperCase()}</div>
+                <button
+                  onClick={() => handleCopy(index)}
+                  className="copy-icon"
+                  data-tooltip-id="tooltip"
+                  data-tooltip-content="Copy"
+                  data-tooltip-place="top"
+                >
+                  <i className="codicon codicon-copy"></i>
+                </button>
+              </div>
+              <pre>
+                <code
+                  ref={(el) => {
+                    codeRefs.current[index] = el;
+                  }}
+                  className={agent === 'React' ? 'tsx' : index === 0 ? 'html' : 'typescript'}
+                >
+                  {content}
+                </code>
+              </pre>
+            </div>
+          ))
         ) : (
           <p>{message}</p>
         )}

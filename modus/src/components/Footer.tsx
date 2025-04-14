@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState, useRef } from 'react';
+import React, { useLayoutEffect, useState, useRef, useMemo } from 'react';
 import "./Footer.css";
 import { AgentService } from './AgentService';
 import react_1 from "../assets/react_1.svg";
@@ -6,6 +6,11 @@ import angularLogo from "../assets/Angular_Logo.png";
 import { v4 as uuidv4 } from 'uuid';
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
+
+const MODELS = {
+  REACT: 'React',
+  ANGULAR: 'Angular',
+};
 
 interface FooterProps {
   onSendMessage: (message: { text: string; isBot: boolean; agent: string }, action: 'add' | 'empty') => void;
@@ -16,18 +21,19 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
   const [inputValue, setInputValue] = useState('');
   const [isOverflowing, setIsOverflowing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedModel, setSelectedModel] = useState('React');
+  const [selectedModel, setSelectedModel] = useState(MODELS.REACT);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [fileInputValue, setFileInputValue] = useState<File | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [progress, setProgress] = useState(0);
 
   const agentService = new AgentService();
-  const agentName = selectedModel === 'React' ? 'best-modus-react' : 'angularp2c';
-  const react_sessionId = uuidv4();
-  const angular_sessionId = uuidv4();
-  const sessionId = selectedModel === 'React' ? react_sessionId : angular_sessionId;
+  const react_sessionId = useMemo(() => uuidv4(), []);
+  const angular_sessionId = useMemo(() => uuidv4(), []);
+  const sessionId = selectedModel === MODELS.REACT ? react_sessionId : angular_sessionId;
 
   const reactUri = document.getElementById('root')?.getAttribute('data-image-uri') || react_1 || undefined;
   const angularUri = document.getElementById('root')?.getAttribute('angularLogo') || angularLogo || undefined;
@@ -54,7 +60,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
       const chatbox = document.querySelector('.message__chatbox') as HTMLElement;
 
       if (wrapper && container) {
-        wrapper.style.height = `${container.offsetHeight + 20}px`;
+        wrapper.style.height = `${container.offsetHeight + 18}px`;
       }
 
       if (container && chatbox) {
@@ -73,20 +79,22 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
     setProgress(value);
 
     if (value === 100) {
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         setProgress(0);
       }, 2000);
+
+      return () => clearTimeout(timeout);
     }
   };
 
   const checkTokenAndExecute = async (callback: () => Promise<void>) => {
     if (window.checkTokenValidity) {
       const isValid = await window.checkTokenValidity();
-      if(isValid){
+      if (isValid) {
         await callback();
-      }
-      else{
+      } else {
         console.error('Token is invalid or expired. Please log in again.');
+        alert('Your session has expired. Please log in again.');
       }
     }
   };
@@ -105,7 +113,8 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
 
         try {
           updateProgress(30);
-          agentService.accessToken = window.accessToken; 
+          agentService.accessToken = window.accessToken;
+          const agentName = selectedModel === MODELS.REACT ? 'best-modus-react' : 'angularp2c';
           const botResponse = await agentService.getGeneralAssistantResponse(agentName, inputValue, sessionId);
 
           if (botResponse) {
@@ -137,7 +146,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
           const base64String = reader.result?.toString();
           if (base64String) {
             try {
-              agentService.accessToken = window.accessToken; // Use updated accessToken
+              agentService.accessToken = window.accessToken;
               const modusCode = await agentService.processImageToModus(base64String, selectedModel, updateProgress);
               if (modusCode) {
                 updateProgress(100);
@@ -167,12 +176,12 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
   };
 
   return (
-    <div className="footer__wrapper">
+    <div className="footer__wrapper" ref={wrapperRef}>
       <div className="progress-bar" style={{ width: `${progress}%` }}></div>
-      <div className={`footer__container ${isFocused ? 'focused' : ''}`}>
+      <div className={`footer__container ${isFocused ? 'focused' : ''}`} ref={containerRef}>
         <div className={`input-container ${isOverflowing ? 'overflowing' : ''}`}>
           <div className={`file__container ${isOverflowing ? 'shadow' : ''}`}>
-            {selectedModel === 'React' ? (
+            {selectedModel === MODELS.REACT ? (
               <div className="file__reference">
                 <img src={reactUri} alt="React File Reference" />
                 <span>React.js</span>
@@ -187,7 +196,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
           <textarea
             id="autoExpand"
             ref={textareaRef}
-            placeholder={!window.accessToken || window.accessToken==='NULL'? 'Please login to continue...' : 'Enter your query here...'}
+            placeholder={!window.accessToken || window.accessToken === 'NULL' ? 'Please login to continue...' : 'Enter your query here...'}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onFocus={() => {
@@ -195,22 +204,24 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
               updateProgress(0);
             }}
             onBlur={() => setIsFocused(false)}
-            disabled={!window.accessToken || window.accessToken==='NULL'}
+            disabled={!window.accessToken || window.accessToken === 'NULL'}
+            aria-label="Chat input"
           ></textarea>
           <div className="toolbar">
             <div className="input-actions">
               <button
                 onClick={() => onSendMessage({ text: 'empty', isBot: false, agent: selectedModel }, 'empty')}
-                className={!window.accessToken || window.accessToken==='NULL'? 'disabled-icon' : ''}
+                className={!window.accessToken || window.accessToken === 'NULL' ? 'disabled-icon' : ''}
                 data-tooltip-id="tooltip"
-                data-tooltip-content={'Clear Chat'}
+                data-tooltip-content={'Clear'}
                 data-tooltip-delay-show={300}
+                data-tooltip-place="top"
               >
                 <i className="codicon codicon-refresh"></i>
               </button>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className={!window.accessToken || window.accessToken==='NULL'? 'disabled-icon' : ''}
+                className={!window.accessToken || window.accessToken === 'NULL' ? 'disabled-icon' : ''}
                 data-tooltip-id="tooltip"
                 data-tooltip-content={'Upload Image'}
                 data-tooltip-delay-show={300}
@@ -226,21 +237,21 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
               />
             </div>
             <div className="dropdown">
-              {!window.accessToken || window.accessToken==='NULL' ? (
+              {!window.accessToken || window.accessToken === 'NULL' ? (
                 <div className="login-button" data-tooltip-id="tooltip" data-tooltip-content={'Login to continue'} data-tooltip-delay-show={300}>
                   <button id="authenticateButton">Login</button>
                 </div>
               ) : (
                 <>
                   <div className="model_selection" onClick={toggleDropdown}>
-                    <button data-tooltip-id="tooltip" data-tooltip-content={'Select Model'} data-tooltip-delay-show={300}>
+                    <button data-tooltip-id="tooltip" data-tooltip-content={'Select Framework'} data-tooltip-delay-show={300}>
                       <span>{selectedModel}</span>
                       <i className="codicon codicon-chevron-down"></i>
                     </button>
                     {isDropdownOpen && (
                       <div className="dropdown-menu">
-                        <div onClick={() => selectModel('React')}>React</div>
-                        <div onClick={() => selectModel('Angular')}>Angular</div>
+                        <div onClick={() => selectModel(MODELS.REACT)}>React</div>
+                        <div onClick={() => selectModel(MODELS.ANGULAR)}>Angular</div>
                       </div>
                     )}
                   </div>
