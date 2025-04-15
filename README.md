@@ -1,70 +1,115 @@
 # Modus Coder
 
-Welcome to Modus Coder, your go-to extension for accelerating MODUS-driven development. With the latest release, Modus Coder v1.1.0.0, we've packed in major updates and new features to enhance your coding experience.
+Welcome to **Modus Coder**, a powerful Visual Studio Code extension designed to accelerate MODUS-driven development. With Modus Coder, you can seamlessly integrate AI-powered tools into your workflow, enabling faster and more efficient coding for Angular and React frameworks.
+
+---
 
 ## Features
 
-- **Framework Support**: Now supports both Angular and React frameworks for Prompt2Code and Image2Code functionalities.
-- **Accordion Responses**: All agent responses are now compressed in accordions, allowing you to view all previous prompts in a session easily.
-- **In-line Code Editing**: Edit the generated MODUS code directly and see live changes in the browser.
-- **Session Management**: Added "Delete", "Delete-All", and "Rename" functionalities for better session management.
+- **Framework Support**: Supports both Angular and React frameworks for **Prompt2Code** and **Image2Code** functionalities.
+- **AI-Powered Code Generation**: Generate code snippets from natural language prompts or uploaded images using AI agents.
+- **Session Management**: Easily manage your sessions with features like "Clear" to keep your workspace organized.
+- **Progress Tracking**: Visual progress bar to track the status of your operations.
+- **Tooltips for Actions**: Intuitive tooltips for all actions to guide users through the extension's features.
+- **Login Integration**: Secure login functionality to authenticate and access AI services.
 
-> Tip: Use animations to showcase these features effectively.
+---
 
 ## Requirements
 
-Ensure you have the necessary dependencies installed for Angular or React, depending on your project needs.
+To use Modus Coder, ensure the following:
+
+- **Node.js**: Required for running the extension's backend services.
+- **Angular or React Frameworks**: Depending on your project needs.
+- **Visual Studio Code**: Version 1.99.0 or higher.
+
+---
+
+## Installation
+
+1. Download and install the extension from the Visual Studio Code Marketplace.
+2. Clone the repository if working locally:
+   ```bash
+   git clone https://github.com/your-repo/modus-coder.git
+   cd modus-coder
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Build the webview:
+   ```bash
+   npm run build
+   ```
+5. Launch the extension in Visual Studio Code.
+
+---
+
+## Usage
+
+- Open the Modus Coder sidebar from the activity bar.
+- Select your preferred framework (Angular or React) using the dropdown menu.
+- Use the Prompt2Code or Image2Code features:
+  - **Prompt2Code**: Enter a natural language prompt to generate code snippets.
+  - **Image2Code**: Upload an image to generate code snippets based on the visual content.
+- Track the progress of your operations using the visual progress bar.
+- Manage sessions using the "Clear" options.
+
+---
 
 ## Extension Settings
 
 This extension contributes the following settings:
 
-- `modusCoder.enable`: Enable/disable this extension.
-- `modusCoder.framework`: Choose between 'Angular' or 'React'.
+- `modusCoder.authenticate`: Login using TID to get access to agent.
+
+---
 
 ## Known Issues
 
+- **Webview Flickering**: The webview may occasionally flicker during switching between different webviews or when switching between frameworks.
+
 Please report any issues to avoid duplicates.
+
+---
 
 ## Release Notes
 
-### 1.1.0.0
+### v1.1.0.0
 
 - Added support for the React framework.
-- Introduced in-line code editing and improved session management features.
+- Improved session management features.
+- Enhanced AI-powered code generation.
 
-### 1.0.1
+### v1.0.1
 
-- Fixed issue #.
+- Fixed minor bugs and improved stability.
 
-### 1.0.0
+### v1.0.0
 
 - Initial release of Modus Coder.
 
+---
+
 ## Following Extension Guidelines
 
-Ensure compliance with [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines).
+Ensure compliance with Extension Guidelines.
 
-## Working with Markdown
-
-Use Visual Studio Code for authoring your README. Here are some useful shortcuts:
-
-- Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-- Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-
-## For More Information
-
-- [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-- [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+---
 
 ## Acknowledgments
 
-Special thanks to @Roopesh Reddy for guiding this release, @Sanjeet Kumar for delivering React support, and @John Bacus and @Kim Nyberg for their continuous support and suggestions.
+Special thanks to:
+
+- @Roopesh Reddy @saidinesh_ketha  for guiding this release.
+- @John Bacus and @Kim Nyberg for their continuous support and suggestions.
+
+---
 
 ## Get Involved
 
-Try out Modus Coder and share your feedback. For a detailed understanding of the new features, check out our video. To get started with the generated code, visit our [repository](#).
+Try out Modus Coder and share your feedback. For a detailed understanding of the new features, check out our video. To get started with the generated code, visit our repository.
 
-Connect with us at “trimble-modus-coder-ug@trimble.com” or join the “Trimble Modus Coder Guild” to brainstorm ideas.
+Connect with us at trimble-modus-coder-ug@trimble.com or join the Trimble Modus Coder Guild to brainstorm ideas.
 
 Thank you for using Modus Coder!
