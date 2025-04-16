@@ -29,7 +29,6 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
   const [fileInputValue, setFileInputValue] = useState<File | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [isFetching, setIsFetching] = useState(false);
 
 
   const agentService = new AgentService();
@@ -104,8 +103,6 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
   };
 
   const handleSendClick = async () => {
-    if (isFetching) return;
-    setIsFetching(true);
     await checkTokenAndExecute(async () => {
       if (inputValue.trim()) {
         onSendMessage({ text: inputValue, isBot: false, agent: selectedModel }, 'add');
@@ -137,7 +134,6 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
         }
       }
     });
-    setIsFetching(false);
   };
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -217,7 +213,8 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
             <div className="input-actions">
               <button
                 onClick={() => onSendMessage({ text: 'empty', isBot: false, agent: selectedModel }, 'empty')}
-                className={isAccessTokenInvalid ? 'disabled-icon' : ''}
+                disabled={isAccessTokenInvalid || inputValue.trim().length === 0}
+                className={isAccessTokenInvalid || messages.length===0 ? 'disabled-icon' : ''}
                 data-tooltip-id="tooltip"
                 data-tooltip-content={'Clear'}
                 data-tooltip-delay-show={300}
@@ -263,8 +260,8 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
                   </div>
                   <button
                     onClick={handleSendClick}
-                    disabled={isFetching}
-                    className={isFetching ? 'disabled-icon' : ''}
+                    disabled={inputValue.trim().length === 0}
+                    className={inputValue.trim().length === 0 ? 'disabled-icon' : ''}
                     data-tooltip-id="tooltip"
                     data-tooltip-content={'Send'}
                     data-tooltip-delay-show={300}

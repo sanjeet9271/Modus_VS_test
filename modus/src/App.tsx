@@ -34,7 +34,23 @@ const App = () => {
   const chatboxRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const initialMessages = window.messages || [];
+    let initialMessages: MessageData[] = [];
+    console.log("window.messages", window.messages);
+  
+    try {
+      if (typeof window.messages === 'string') {
+        initialMessages = JSON.parse(window.messages);
+      } 
+      else if (Array.isArray(window.messages)) {
+        initialMessages = window.messages;
+      }
+    } catch (error) {
+      console.error('Error parsing messages:', error);
+      initialMessages = [];
+    }
+
+    console.log("initialMessages", initialMessages);
+  
     setMessages(initialMessages);
 
     const token = window.accessToken || 'NULL';
@@ -57,9 +73,12 @@ const App = () => {
   }, [accessToken]);
 
   useEffect(() => {
-    window.messages = messages;
-    if (window.vscode) {
-      window.vscode.postMessage({ command: 'updateMessages', message: JSON.stringify(messages) });
+    if (messages.length > 0) {
+      window.messages = [...(window.messages || []), messages[messages.length - 1]];
+      if (window.vscode) {
+        window.vscode.postMessage({ command: 'updateMessages', message: JSON.stringify(messages) });
+        console.log("[moduscoder] message updated to window");
+      }
     }
   }, [messages]);
 

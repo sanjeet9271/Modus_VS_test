@@ -13,19 +13,12 @@ export class SidePanelProvider implements WebviewViewProvider {
 
   constructor(private readonly extensionUri: Uri, context: vscode.ExtensionContext) {
     this.context = context;
-
-    const editorChangeListener = vscode.window.onDidChangeActiveTextEditor(editor => {
-      if (editor) {
-        this.currentFile = editor.document.fileName;
-        this.updateWebviewContent();
-      }
-    });
-
-    this._disposables.push(editorChangeListener);
+    this._disposables.push();
   }
 
   public resolveWebviewView(webviewView: WebviewView, context: WebviewViewResolveContext, token: CancellationToken) {
     this._view = webviewView;
+    console.log("[moduscoder] WebviewView resolved called");
 
     webviewView.webview.options = {
       enableScripts: true,
@@ -34,6 +27,13 @@ export class SidePanelProvider implements WebviewViewProvider {
         Uri.joinPath(this.extensionUri, "node_modules", "@vscode", "codicons", "dist")
       ],
     };
+
+    webviewView.onDidChangeVisibility(() => {
+      if (webviewView.visible) {
+        console.log("[moduscoder] WebView became visible again");
+        this.updateWebviewContent();
+      }
+    });
 
     this.updateWebviewContent();
     webviewView.webview.onDidReceiveMessage(this.handleMessage.bind(this));
@@ -77,6 +77,7 @@ export class SidePanelProvider implements WebviewViewProvider {
       const accessToken = this.context.globalState.get<string>('accessToken');
       const refreshToken = this.context.globalState.get<string>('refreshToken');
       const messages = this.context.globalState.get<string[]>('messages') || [];
+      console.log("messages in updated webview", messages);
       this._view.webview.html = this._getWebviewContent(this._view.webview, this.extensionUri, accessToken, this.currentFile, messages, refreshToken);
     }
   }
@@ -113,7 +114,7 @@ export class SidePanelProvider implements WebviewViewProvider {
         <title>Modus Coder</title>
       </head>
       <body> 
-        <div id="root" class="monaco-workbench" accessToken="${accessToken || ''}" refreshToken="${refreshToken || ''}" data-image-uri="${reactUri}" moduslogo="${moduscoderUri}" angularLogo="${angularUri}">
+        <div id="root" class="monaco-workbench" refreshToken="${refreshToken || ''}" data-image-uri="${reactUri}" moduslogo="${moduscoderUri}" angularLogo="${angularUri}">
         </div>
         <script type="module" src="${scriptUri}" nonce="${nonce}"></script>
         <script nonce="${nonce}">

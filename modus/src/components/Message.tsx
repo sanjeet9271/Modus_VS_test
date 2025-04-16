@@ -21,7 +21,6 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
   const codeRefs = useRef<(HTMLElement | null)[]>([]);
   const [isFocused, setIsFocused] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
-
   const moduslogourl = document.getElementById('root')?.getAttribute('moduslogo');
 
   const extractCodeBlocks = (input: string, languages: string[]): string[] => {
@@ -41,13 +40,17 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
     });
   };
 
-  // Use useMemo to memoize codeContents
   const codeContents = useMemo(() => {
     if (isBot) {
       return extractCodeBlocks(message, agent === 'React' ? ['tsx'] : ['html', 'typescript']);
     }
     return [];
   }, [message, isBot, agent]);
+
+  const [tooltipContents, setTooltipContents] = useState<string[]>(
+    codeContents.map(() => 'Copy') 
+  );
+
 
   const isCode = useMemo(() => codeContents.some((content) => content !== ''), [codeContents]);
 
@@ -74,17 +77,21 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
 
   const handleCopy = (index: number) => {
     const contentToCopy = codeContents[index];
-    const buttonElement = document.querySelectorAll('.copy-icon')[index];
 
     navigator.clipboard
       .writeText(contentToCopy)
       .then(() => {
-        if (buttonElement) {
-          buttonElement.setAttribute('data-tooltip-content', 'Copied');
-          setTimeout(() => {
-            buttonElement.setAttribute('data-tooltip-content', 'Copy');
-          }, 2000); // Reset to "Copy" after 2 seconds
-        }
+        // Update the tooltip content for the specific button
+        setTooltipContents((prev) =>
+          prev.map((content, i) => (i === index ? 'Copied' : content))
+        );
+
+        // Reset the tooltip content back to "Copy" after 2 seconds
+        setTimeout(() => {
+          setTooltipContents((prev) =>
+            prev.map((content, i) => (i === index ? 'Copy' : content))
+          );
+        }, 2000);
       })
       .catch((err) => {
         console.error('Failed to copy: ', err);
@@ -130,8 +137,8 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
                   onClick={() => handleCopy(index)}
                   className="copy-icon"
                   data-tooltip-id="tooltip"
-                  data-tooltip-content="Copy"
-                  data-tooltip-place="top"
+                  data-tooltip-content={tooltipContents[index]}
+                  data-tooltip-place="left"
                 >
                   <i className="codicon codicon-copy"></i>
                 </button>

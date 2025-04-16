@@ -31,7 +31,7 @@ export function startServer(context: vscode.ExtensionContext, sidePanelProvider:
     }
   });
 
-  const port = process.env.PORT || 4200; // Use port from .env or fallback to 4200
+  const port = process.env.PORT || 4200; 
   server.listen(port, () => {
     console.log(`[moduscoder] Server is listening on http://localhost:${port}`);
   });
