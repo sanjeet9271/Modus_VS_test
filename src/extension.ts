@@ -13,8 +13,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
   try {
     // Initialize global state with default values
-    await extensionContext.globalState.update('accessToken', 'NULL');
-    await extensionContext.globalState.update('messages', []);
+    // await extensionContext.globalState.update('accessToken', 'NULL');
+    // await extensionContext.globalState.update('messages', []);
     await extensionContext.globalState.update('refreshToken', 'NULL');
   } catch (error) {
     console.error('[moduscoder] Failed to initialize global state:', error);

@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState, useRef, useMemo } from 'react';
+import React, { useLayoutEffect, useState, useRef, useMemo,useCallback } from 'react';
 import "./Footer.css";
 import { AgentService } from './AgentService';
 import react_1 from "../assets/react_1.svg";
@@ -41,42 +41,43 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
   const reactUri = document.getElementById('root')?.getAttribute('data-image-uri') || react_1 || undefined;
   const angularUri = document.getElementById('root')?.getAttribute('angularLogo') || angularLogo || undefined;
 
+  const autoExpand = useCallback((field: HTMLTextAreaElement) => {
+    const maxHeight = 200;
+    field.style.height = 'inherit';
+    const computed = window.getComputedStyle(field);
+    const height =
+      parseInt(computed.getPropertyValue('border-top-width'), 10) +
+      parseInt(computed.getPropertyValue('padding-top'), 10) +
+      field.scrollHeight +
+      parseInt(computed.getPropertyValue('padding-bottom'), 10) +
+      parseInt(computed.getPropertyValue('border-bottom-width'), 10);
+
+    field.style.height = Math.min(height, maxHeight) + 'px';
+    field.style.overflowY = height > maxHeight ? 'auto' : 'hidden';
+
+    setIsOverflowing(height > maxHeight);
+
+    const wrapper = wrapperRef.current;
+    const container = containerRef.current;
+    const chatbox = document.querySelector('.message__chatbox') as HTMLElement;
+
+    if (wrapper && container) {
+      wrapper.style.height = `${container.offsetHeight + 18}px`;
+    }
+
+    if (container && chatbox) {
+      const footerHeight = container.offsetHeight + 18;
+      chatbox.style.height = `calc(100vh - ${footerHeight}px)`;
+      chatbox.style.overflowY = 'auto';
+    }
+  }, []);
+
+  // Handle textarea auto-expansion and layout adjustments
   useLayoutEffect(() => {
-    const autoExpand = (field: HTMLTextAreaElement) => {
-      const maxHeight = 200;
-      field.style.height = 'inherit';
-      const computed = window.getComputedStyle(field);
-      const height =
-        parseInt(computed.getPropertyValue('border-top-width'), 10) +
-        parseInt(computed.getPropertyValue('padding-top'), 10) +
-        field.scrollHeight +
-        parseInt(computed.getPropertyValue('padding-bottom'), 10) +
-        parseInt(computed.getPropertyValue('border-bottom-width'), 10);
-
-      field.style.height = Math.min(height, maxHeight) + 'px';
-      field.style.overflowY = height > maxHeight ? 'auto' : 'hidden';
-
-      setIsOverflowing(height > maxHeight);
-
-      const wrapper = document.querySelector('.footer__wrapper') as HTMLElement;
-      const container = document.querySelector('.footer__container') as HTMLElement;
-      const chatbox = document.querySelector('.message__chatbox') as HTMLElement;
-
-      if (wrapper && container) {
-        wrapper.style.height = `${container.offsetHeight + 18}px`;
-      }
-
-      if (container && chatbox) {
-        const footerHeight = container.offsetHeight + 20;
-        chatbox.style.height = `calc(100vh - ${footerHeight}px)`;
-        chatbox.style.overflowY = 'auto';
-      }
-    };
-
     if (textareaRef.current) {
       autoExpand(textareaRef.current);
     }
-  }, [inputValue, fileInputValue, messages]);
+  }, [inputValue, fileInputValue, messages, autoExpand]);
 
   const updateProgress = (value: number) => {
     setProgress(value);

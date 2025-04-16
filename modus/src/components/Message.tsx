@@ -81,12 +81,9 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
     navigator.clipboard
       .writeText(contentToCopy)
       .then(() => {
-        // Update the tooltip content for the specific button
         setTooltipContents((prev) =>
           prev.map((content, i) => (i === index ? 'Copied' : content))
         );
-
-        // Reset the tooltip content back to "Copy" after 2 seconds
         setTimeout(() => {
           setTooltipContents((prev) =>
             prev.map((content, i) => (i === index ? 'Copy' : content))
@@ -138,7 +135,7 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
                   className="copy-icon"
                   data-tooltip-id="tooltip"
                   data-tooltip-content={tooltipContents[index]}
-                  data-tooltip-place="left"
+                  data-tooltip-place='top'
                 >
                   <i className="codicon codicon-copy"></i>
                 </button>
