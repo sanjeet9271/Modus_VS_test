@@ -108,7 +108,13 @@ const App = () => {
     if (action === 'add') {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     } else if (action === 'empty') {
+      console.log("Emptying messages");
       setMessages([]);
+      window.messages = [];
+      if (window.vscode) {
+        window.vscode.postMessage({ command: 'updateMessages', message: JSON.stringify([]) }); // Notify VS Code
+      }
+      console.log("[moduscoder] message emptied in window",window.messages);
     }
   };
 

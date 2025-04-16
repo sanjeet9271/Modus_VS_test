@@ -114,3 +114,10 @@
   border-radius: 50%;
   border: 1px solid var(--vscode-editorLineNumber-foreground); /* Optional border for better visibility */
 }
+
+#tooltip.small-tooltip {
+  font-size: 7px; /* Smaller font size */
+  padding: 3px 3px; /* Smaller padding */
+  max-width: 150px; /* Optional: Limit the width */
+  line-height: 0.8; /* Adjust line height for better readability */
+}

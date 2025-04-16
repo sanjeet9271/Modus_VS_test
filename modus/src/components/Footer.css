@@ -188,6 +188,7 @@
     border-radius: 5px;
     padding: 5px;
     border: 1px solid var(--vscode-dropdown-border); /* Dropdown border color */
+    pointer-events: auto; 
 }
 
 .dropdown-menu div {
@@ -229,6 +230,31 @@ pre code.hljs {
     opacity: 0.5;
     pointer-events: none;
 }
+
+#tooltip {
+    background-color: var(--vscode-editorWidget-background); /* VS Code tooltip background color */
+    color: var(--vscode-editorHoverWidget-foreground); /* VS Code tooltip text color */
+    font-size: 12px;
+    padding: 5px 5px; 
+    border-radius: 4px; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    max-width: 200px; 
+    text-align: center; 
+    line-height: 1.4; 
+    z-index: 1000; 
+    transition: width 0.3s ease, padding 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    white-space: nowrap; 
+    overflow: hidden;
+}
+  
+  /* Add a subtle fade-in animation for the tooltip */
+#tooltip[data-show] {
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.disable-pointer-events {
+    pointer-events: none;
+  }
 
 @media (max-width: 600px) {
     .footer__container {

@@ -22,6 +22,7 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
   const [isFocused, setIsFocused] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const moduslogourl = document.getElementById('root')?.getAttribute('moduslogo');
+  const [tooltipContent, setTooltipContent] = useState('Copy');
 
   const extractCodeBlocks = (input: string, languages: string[]): string[] => {
     return languages.map((language) => {
@@ -46,11 +47,6 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
     }
     return [];
   }, [message, isBot, agent]);
-
-  const [tooltipContents, setTooltipContents] = useState<string[]>(
-    codeContents.map(() => 'Copy') 
-  );
-
 
   const isCode = useMemo(() => codeContents.some((content) => content !== ''), [codeContents]);
 
@@ -81,13 +77,9 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
     navigator.clipboard
       .writeText(contentToCopy)
       .then(() => {
-        setTooltipContents((prev) =>
-          prev.map((content, i) => (i === index ? 'Copied' : content))
-        );
+        setTooltipContent('Copied'); 
         setTimeout(() => {
-          setTooltipContents((prev) =>
-            prev.map((content, i) => (i === index ? 'Copy' : content))
-          );
+          setTooltipContent('Copy'); 
         }, 2000);
       })
       .catch((err) => {
@@ -134,8 +126,9 @@ const Message: React.FC<MessageProps> = ({ message, isBot, agent, userinfo }) =>
                   onClick={() => handleCopy(index)}
                   className="copy-icon"
                   data-tooltip-id="tooltip"
-                  data-tooltip-content={tooltipContents[index]}
+                  data-tooltip-content={tooltipContent}
                   data-tooltip-place='top'
+                  data-tooltip-class="small-tooltip"
                 >
                   <i className="codicon codicon-copy"></i>
                 </button>

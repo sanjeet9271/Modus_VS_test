@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState, useRef, useMemo,useCallback } from 'react';
+import React, { useLayoutEffect, useState,useEffect,useRef, useMemo} from 'react';
 import "./Footer.css";
 import { AgentService } from './AgentService';
 import react_1 from "../assets/react_1.svg";
@@ -30,7 +30,6 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [progress, setProgress] = useState(0);
 
-
   const agentService = new AgentService();
   const react_sessionId = useMemo(() => uuidv4(), []);
   const angular_sessionId = useMemo(() => uuidv4(), []);
@@ -41,43 +40,41 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
   const reactUri = document.getElementById('root')?.getAttribute('data-image-uri') || react_1 || undefined;
   const angularUri = document.getElementById('root')?.getAttribute('angularLogo') || angularLogo || undefined;
 
-  const autoExpand = useCallback((field: HTMLTextAreaElement) => {
-    const maxHeight = 200;
-    field.style.height = 'inherit';
-    const computed = window.getComputedStyle(field);
-    const height =
-      parseInt(computed.getPropertyValue('border-top-width'), 10) +
-      parseInt(computed.getPropertyValue('padding-top'), 10) +
-      field.scrollHeight +
-      parseInt(computed.getPropertyValue('padding-bottom'), 10) +
-      parseInt(computed.getPropertyValue('border-bottom-width'), 10);
 
-    field.style.height = Math.min(height, maxHeight) + 'px';
-    field.style.overflowY = height > maxHeight ? 'auto' : 'hidden';
-
-    setIsOverflowing(height > maxHeight);
-
-    const wrapper = wrapperRef.current;
-    const container = containerRef.current;
-    const chatbox = document.querySelector('.message__chatbox') as HTMLElement;
-
-    if (wrapper && container) {
-      wrapper.style.height = `${container.offsetHeight + 18}px`;
-    }
-
-    if (container && chatbox) {
-      const footerHeight = container.offsetHeight + 18;
-      chatbox.style.height = `calc(100vh - ${footerHeight}px)`;
-      chatbox.style.overflowY = 'auto';
-    }
-  }, []);
-
-  // Handle textarea auto-expansion and layout adjustments
   useLayoutEffect(() => {
-    if (textareaRef.current) {
-      autoExpand(textareaRef.current);
+    const field = textareaRef.current;
+    if (field) {
+      const maxHeight = 200;
+      field.style.height = 'inherit'; // Reset height to calculate the new height
+      const computed = window.getComputedStyle(field);
+      const height =
+        parseInt(computed.getPropertyValue('border-top-width'), 10) +
+        parseInt(computed.getPropertyValue('padding-top'), 10) +
+        field.scrollHeight +
+        parseInt(computed.getPropertyValue('padding-bottom'), 10) +
+        parseInt(computed.getPropertyValue('border-bottom-width'), 10);
+  
+      field.style.height = Math.min(height, maxHeight) + 'px';
+      field.style.overflowY = height > maxHeight ? 'auto' : 'hidden';
+  
+      setIsOverflowing(height > maxHeight);
+  
+      const wrapper = wrapperRef.current;
+      const container = containerRef.current;
+      const chatbox = document.querySelector('.message__chatbox') as HTMLElement;
+  
+      if (wrapper && container) {
+        wrapper.style.height = `${container.offsetHeight + 18}px`;
+      }
+  
+      if (container && chatbox) {
+        const footerHeight = container.offsetHeight + 18;
+        chatbox.style.height = `calc(100vh - ${footerHeight}px)`;
+        chatbox.style.overflowY = 'auto';
+      }
     }
-  }, [inputValue, fileInputValue, messages, autoExpand]);
+  }, [inputValue, fileInputValue, messages]);
+  
 
   const updateProgress = (value: number) => {
     setProgress(value);
@@ -97,6 +94,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
       if (isValid) {
         await callback();
       } else {
+        onSendMessage({ text: `Error Access Token has expired!`, isBot: true, agent: selectedModel }, 'add');
         console.error('Token is invalid or expired. Please log in again.');
         alert('Your session has expired. Please log in again.');
       }
@@ -104,16 +102,11 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
   };
 
   const handleSendClick = async () => {
+    onSendMessage({ text: inputValue, isBot: false, agent: selectedModel }, 'add');
+    setInputValue('');
     await checkTokenAndExecute(async () => {
       if (inputValue.trim()) {
-        onSendMessage({ text: inputValue, isBot: false, agent: selectedModel }, 'add');
-        setInputValue('');
         updateProgress(10);
-
-        if (textareaRef.current) {
-          textareaRef.current.style.height = 'inherit';
-          setIsOverflowing(false);
-        }
 
         try {
           updateProgress(30);
@@ -126,10 +119,12 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
             onSendMessage({ text: botResponse, isBot: true, agent: selectedModel }, 'add');
             updateProgress(100);
           } else {
-            console.error('Bot response is undefined');
+            console.error('Bot response is undefined!');
+            onSendMessage({ text: 'Error Bot response is undefined', isBot: true, agent: selectedModel }, 'add');
             updateProgress(0);
           }
         } catch (error) {
+          onSendMessage({ text: `Error fetching bot response!`, isBot: true, agent: selectedModel }, 'add');
           console.error('Error fetching bot response:', error);
           updateProgress(0);
         }
@@ -157,10 +152,12 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
                 onSendMessage({ text: modusCode, isBot: true, agent: selectedModel }, 'add');
               } else {
                 updateProgress(0);
+                onSendMessage({ text: 'Error to process image to MODUS code!', isBot: true, agent: selectedModel }, 'add');
                 console.error('Failed to process image to MODUS code.');
               }
             } catch (error) {
               updateProgress(0);
+              onSendMessage({ text: `Error fetching bot response!`, isBot: true, agent: selectedModel }, 'add');
               console.error('Error processing image:', error);
             }
           }
@@ -179,8 +176,22 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
     setIsDropdownOpen(false);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isDropdownOpen && !containerRef.current?.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isDropdownOpen]);
+
+
   return (
-    <div className="footer__wrapper" ref={wrapperRef}>
+    <div className={`footer__wrapper ${isDropdownOpen ? 'disable-pointer-events' : ''}`} ref={wrapperRef} >
       <div className="progress-bar" style={{ width: `${progress}%` }}></div>
       <div className={`footer__container ${isFocused ? 'focused' : ''}`} ref={containerRef}>
         <div className={`input-container ${isOverflowing ? 'overflowing' : ''}`}>
@@ -214,7 +225,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
             <div className="input-actions">
               <button
                 onClick={() => onSendMessage({ text: 'empty', isBot: false, agent: selectedModel }, 'empty')}
-                disabled={isAccessTokenInvalid || inputValue.trim().length === 0}
+                disabled={isAccessTokenInvalid || messages.length===0}
                 className={isAccessTokenInvalid || messages.length===0 ? 'disabled-icon' : ''}
                 data-tooltip-id="tooltip"
                 data-tooltip-content={'Clear'}
@@ -269,13 +280,13 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
                   >
                     <i className="codicon codicon-send"></i>
                   </button>
-                  <Tooltip id="tooltip" />
                 </>
               )}
             </div>
           </div>
         </div>
       </div>
+      <Tooltip id="tooltip" />
     </div>
   );
 };
