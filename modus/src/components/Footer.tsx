@@ -258,7 +258,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
             </div>
             <div className="dropdown">
               {isAccessTokenInvalid ? (
-                <div className="login-button" data-tooltip-id="tooltip" data-tooltip-content={'Login'} data-tooltip-delay-show={300}>
+                <div className="login-button" data-tooltip-id="tooltip" data-tooltip-content={'Login to continue'} data-tooltip-delay-show={300}>
                   <button id="authenticateButton">Login</button>
                 </div>
               ) : (

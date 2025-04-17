@@ -35,6 +35,7 @@ export async function getAccessToken(authCode: string, context: vscode.Extension
   params.append('redirect_uri', redirectUri);
   params.append('client_id', clientId);
   params.append('code_verifier', codeVerifier || '');
+  params.append('code_challenge',generateCodeChallenge(generateCodeVerifier(context)));
 
   try {
     const response = await axios.post(tokenUrl, params, {
@@ -91,6 +92,8 @@ export async function refreshUsingRefreshToken(context: vscode.ExtensionContext)
     refresh_token: refreshToken,
     client_id: clientId,
     code_verifier: codeVerifier,
+    code_challenge: generateCodeChallenge(generateCodeVerifier(context)),
+    code_challenge_method: 'S256',
   };
 
   const formBody = new URLSearchParams();
@@ -132,10 +135,10 @@ export async function checkTokenValidity(context: vscode.ExtensionContext): Prom
 
   if (!tokenExpiryTime) {
     console.log('[moduscoder] Token expiry time not found. Refreshing token...');
-    return refreshUsingRefreshToken(context);
+    return true;
   }
 
-  if (tokenExpiryTime - currentTimeInSec <= 300) {
+  if (tokenExpiryTime - currentTimeInSec <= 300) { // 5 minutes buffer
     console.log('[moduscoder] Token is about to expire. Refreshing...');
     return refreshUsingRefreshToken(context);
   }
