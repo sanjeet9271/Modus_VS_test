@@ -4,7 +4,7 @@
   "description": "Modus Coder as VS code extension",
   "version": "0.0.2",
   "engines": {
-    "vscode": "^1.99.0"
+    "vscode": "^1.78.0"
   },
   "categories": [
     "Other"
@@ -23,7 +23,7 @@
         {
           "id": "moduscoder-sidebar-container",
           "title": "Modus Coder",
-          "icon": "./src/media/VS_mdous_coder_logo.png"
+          "icon": "./src/media/Modus_VS_logo.png"
         }
       ]
     },
@@ -33,7 +33,7 @@
           "type": "webview",
           "id": "moduscoder-sidebar",
           "name": "",
-          "icon": "./src/media/VS_mdous_coder_logo.png"
+          "icon": "./src/media/Modus_VS_logo.png"
         }
       ]
     }
