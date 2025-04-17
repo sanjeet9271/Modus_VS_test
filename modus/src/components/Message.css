@@ -6,7 +6,7 @@
   padding: 10px;
   width: 100%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  color: var(--vscode-editor-foreground); /* Editor foreground color */
+  color: var(--vscode-activityBarTop-foreground); /* Editor foreground color */
   font-size: 12px;
   font-weight: 500;
   line-height: 1.5;
@@ -45,7 +45,7 @@
 .message__body p {
   font-size: 12px;
   margin: 0;
-  color: var(--vscode-editor-foreground);
+  color: var(--vscode-activityBarTop-foreground);
 }
 
 .message__container {
@@ -98,7 +98,7 @@
 .language-label {
   font-size: 0.9em;
   font-weight: bold;
-  color: var(--vscode-editor-foreground); 
+  color: var(--vscode-activityBarTop-foreground); 
 }
 
 .initials-avatar {
@@ -106,7 +106,7 @@
   width: 30px;
   height: 30px;
   background-color: var(--vscode-editor-background); /* Use editor background color */
-  color: var(--vscode-editor-foreground); /* Use editor foreground color */
+  color: var(--vscode-activityBarTop-foreground); /* Use editor foreground color */
   font-size: 12px; /* Adjust font size to fit within 30px */
   font-weight: bold;
   text-align: center;

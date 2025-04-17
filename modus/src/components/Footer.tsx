@@ -42,10 +42,11 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
 
 
   useLayoutEffect(() => {
+    console.log("Layout effect triggered");
     const field = textareaRef.current;
     if (field) {
       const maxHeight = 200;
-      field.style.height = 'inherit'; // Reset height to calculate the new height
+      field.style.height = 'inherit'; 
       const computed = window.getComputedStyle(field);
       const height =
         parseInt(computed.getPropertyValue('border-top-width'), 10) +
@@ -64,7 +65,11 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
       const chatbox = document.querySelector('.message__chatbox') as HTMLElement;
   
       if (wrapper && container) {
-        wrapper.style.height = `${container.offsetHeight + 18}px`;
+        let container__height = container.offsetHeight;
+        if(!inputValue){
+           container__height = 127;
+        }
+        wrapper.style.height = `${container__height + 18}px`;
       }
   
       if (container && chatbox) {
@@ -253,7 +258,7 @@ const Footer: React.FC<FooterProps> = ({ onSendMessage, messages }) => {
             </div>
             <div className="dropdown">
               {isAccessTokenInvalid ? (
-                <div className="login-button" data-tooltip-id="tooltip" data-tooltip-content={'Login to continue'} data-tooltip-delay-show={300}>
+                <div className="login-button" data-tooltip-id="tooltip" data-tooltip-content={'Login'} data-tooltip-delay-show={300}>
                   <button id="authenticateButton">Login</button>
                 </div>
               ) : (

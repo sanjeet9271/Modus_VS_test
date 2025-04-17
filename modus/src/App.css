@@ -36,17 +36,3 @@
     width: 0 !important; 
 }
 
-.message-display {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.message-display h2 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-}
-
-.message-display p {
-    font-size: 1.2rem;
-    color: var(--vscode-descriptionForeground); /* Description foreground color */
-}

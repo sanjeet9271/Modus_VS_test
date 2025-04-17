@@ -54,7 +54,7 @@
     padding: 7px;
     border-radius: 4px;
     background-color: var(--vscode-editor-background); /* Editor background color */
-    color: var(--vscode-editor-foreground); /* Editor foreground color */
+    color: var(--vscode-activityBarTop-foreground); /* Editor foreground color */
     width: 100%;
     box-sizing: border-box;
     outline: none;
@@ -80,7 +80,7 @@
 .input-actions button {
     background: none;
     border: none;
-    color: var(--vscode-editor-foreground); /* Editor foreground color */
+    color: var(--vscode-activityBarTop-foreground); /* Editor foreground color */
     font-size: 18px;
     margin-left: 10px;
     cursor: pointer;
